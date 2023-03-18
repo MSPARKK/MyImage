@@ -12,6 +12,8 @@ import retrofit2.Response
 interface MainRepository {
     suspend fun searchImage(query : String, sort : String): Response<ImageSearchResponse>
     suspend fun searchVideo(query : String, sort : String): Response<ImageSearchResponse>
+
+//    suspend fun getImages(query : String, sort : String): Response<ImageSearchResponse>
 }
 
 class MainRepositoryImpl(
@@ -26,6 +28,10 @@ class MainRepositoryImpl(
     override suspend fun searchVideo(query: String, sort: String): Response<ImageSearchResponse> {
         return remoteDataSource.searchVideo(query, sort)
     }
+
+//    override suspend fun getImages(query: String, sort: String): Response<ImageSearchResponse> {
+//        return remoteDataSource.getImages(query, sort)
+//    }
 
     companion object {
         @JvmStatic
@@ -46,6 +52,7 @@ class MainRepositoryImpl(
 interface MainRemoteDataSource {
     suspend fun searchImage(query : String, sort : String): Response<ImageSearchResponse>
     suspend fun searchVideo(query : String, sort : String): Response<ImageSearchResponse>
+//    suspend fun getImages(query : String, sort : String): Response<ImageSearchResponse>
 }
 
 class MainRemoteDataSourceImpl(
@@ -61,6 +68,12 @@ class MainRemoteDataSourceImpl(
     override suspend fun searchVideo(query: String, sort: String): Response<ImageSearchResponse> {
         return kakaoOpenApi.searchVideo(query = query, sort = sort, page = 1, size = 10) // max page 15
     }
+
+//    override suspend fun getImages(query: String, sort: String): Response<ImageSearchResponse> {
+//
+//        val result1 = async { apiService.getFirstApi() }
+//        val result2 = async { apiService.getSecondApi() }
+//    }
 }
 
 interface MainLocalDataSource {
