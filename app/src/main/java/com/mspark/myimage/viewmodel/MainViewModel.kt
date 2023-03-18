@@ -11,4 +11,12 @@ class MainViewModel(
 ) : ViewModel() {
 
 
+    fun searchImage() {
+//        viewModelScope.launch {
+//            val response = repository.searchImage("페이커","accuracy")
+////            myCustomPosts.value = response
+//        }
+        repository.searchImage("페이커","recency")
+
+    }
 }
