@@ -1,6 +1,7 @@
 package com.mspark.myimage
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -43,6 +44,7 @@ class SearchFragment: Fragment() {
     private fun setObserver() {
         viewModel.imageList.observe(viewLifecycleOwner) {
             lifecycleScope.launchWhenCreated {
+                Log.d("@@ SearchFragment", "setObserver, imageList: $it")
                 imageAdapter.submitList(it)
             }
         }

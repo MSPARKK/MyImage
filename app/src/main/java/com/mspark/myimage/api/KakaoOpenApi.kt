@@ -44,7 +44,7 @@ interface KakaoOpenApi {
             val certificatePinner: CertificatePinner = CertificatePinner.Builder().build()
 
             val loggingInterceptor = HttpLoggingInterceptor { s ->
-                Log.d("@@ network", s)
+                Log.d("network", s)
             }
             loggingInterceptor.setLevel(HttpLoggingInterceptor.Level.BODY)
 

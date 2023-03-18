@@ -10,6 +10,16 @@ import com.mspark.myimage.viewmodel.MainViewModel
 class MainActivity : AppCompatActivity() {
     private lateinit var binding: ActivityMainBinding
 
+    private var showingFragment: Fragment? = null
+
+    private val searchFragment by lazy {
+        SearchFragment.newInstance()
+    }
+
+    private val myImageFragment by lazy {
+        MyImageFragment.newInstance()
+    }
+
     private val viewModel by lazy {
         MainViewModel(MainRepositoryImpl.getRepository(this))
     }
@@ -24,11 +34,11 @@ class MainActivity : AppCompatActivity() {
             setOnItemSelectedListener {
                 when(it.itemId) {
                     R.id.searchTab -> {
-                        moveFragment(SearchFragment.newInstance())
+                        moveFragment(searchFragment)
                         true
                     }
                     R.id.myImageTab -> {
-                        moveFragment(MyImageFragment.newInstance())
+                        moveFragment(myImageFragment)
                         true
                     }
                     else -> false
@@ -40,8 +50,25 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun moveFragment(fragment: Fragment) {
-        supportFragmentManager.beginTransaction()
-            .replace(R.id.mainContainer, fragment)
-            .commit()
+        val transaction = supportFragmentManager.beginTransaction()
+
+        if (showingFragment != fragment) {
+
+            val foundFragment = supportFragmentManager.findFragmentByTag(fragment.javaClass.name)
+            if (foundFragment == null) {
+                transaction.add(R.id.mainContainer, fragment, fragment.javaClass.name)
+            }
+
+            showingFragment?.let {
+                transaction.hide(it)
+            }
+
+            transaction.show(fragment)
+
+            transaction.commitNowAllowingStateLoss()
+            showingFragment = fragment
+
+        }
+
     }
 }

@@ -15,6 +15,7 @@ class MainViewModel(
 
     private val _imageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
     val imageList: LiveData<List<KakaoImage>> = _imageList
+    private val totalImageList = ArrayList<KakaoImage>()
 
 
     fun searchImage() {
@@ -23,7 +24,9 @@ class MainViewModel(
             if (response.isSuccessful) {
                 Log.d("@@ MainViewModel", "searchImage: ${response.body()?.documents}")
                 response.body()?.documents?.let {
-                    _imageList.postValue(it)
+//                    _imageList.postValue(it)
+                    totalImageList.addAll(it)
+                    _imageList.postValue(totalImageList)
                 }
             } else {
                 Log.d("@@ MainViewModel", "searchImage: ${response.errorBody()}")
@@ -37,7 +40,9 @@ class MainViewModel(
             if (response.isSuccessful) {
                 Log.d("@@ MainViewModel", "searchImage: ${response.body()?.documents}")
                 response.body()?.documents?.let {
-                    _imageList.postValue(it)
+//                    _imageList.postValue(it)
+                    totalImageList.addAll(it)
+                    _imageList.postValue(totalImageList)
                 }
             } else {
                 Log.d("@@ MainViewModel", "searchImage: ${response.errorBody()}")

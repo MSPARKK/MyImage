@@ -7,7 +7,6 @@ import androidx.appcompat.app.AppCompatActivity
 import com.mspark.myimage.api.KakaoOpenApi
 import com.mspark.myimage.constants.StringConstants.*
 import com.mspark.myimage.data.ImageSearchResponse
-import retrofit2.Callback
 import retrofit2.Response
 
 interface MainRepository {
@@ -52,49 +51,15 @@ interface MainRemoteDataSource {
 class MainRemoteDataSourceImpl(
     private val kakaoOpenApi: KakaoOpenApi
 ): MainRemoteDataSource {
+
+
     override suspend fun searchImage(query: String, sort: String): Response<ImageSearchResponse> {
-        return kakaoOpenApi.searchImage(query = query, sort = sort, page = 1, size = 80)
-//            .enqueue(object: Callback<ImageSearchResponse> {
-//                override fun onResponse(
-//                    call: retrofit2.Call<ImageSearchResponse>,
-//                    response: retrofit2.Response<ImageSearchResponse>
-//                ) {
-//                    if (response.isSuccessful) {
-//
-//                        val imageSearchResponse = response.body()
-//                        if (imageSearchResponse != null) {
-//                            Log.d("@@ MainRepositoryImpl", "searchImage / onResponse, imageSearchResponse : $imageSearchResponse")
-//                        }
-//                    }
-//                }
-//
-//                override fun onFailure(call: retrofit2.Call<ImageSearchResponse>, t: Throwable) {
-//                    Log.d("@@ MainRepositoryImpl", "searchImage / onFailure, $t")
-//                }
-//            })
+        return kakaoOpenApi.searchImage(query = query, sort = sort, page = 1, size = 10) // max page 80
     }
 
 
     override suspend fun searchVideo(query: String, sort: String): Response<ImageSearchResponse> {
-        return kakaoOpenApi.searchVideo(query = query, sort = sort, page = 1, size = 15)
-//            .enqueue(object: Callback<ImageSearchResponse> {
-//                override fun onResponse(
-//                    call: retrofit2.Call<ImageSearchResponse>,
-//                    response: retrofit2.Response<ImageSearchResponse>
-//                ) {
-//                    if (response.isSuccessful) {
-//
-//                        val imageSearchResponse = response.body()
-//                        if (imageSearchResponse != null) {
-//                            Log.d("@@ MainRepositoryImpl", "searchVideo / onResponse, imageSearchResponse : $imageSearchResponse")
-//                        }
-//                    }
-//                }
-//
-//                override fun onFailure(call: retrofit2.Call<ImageSearchResponse>, t: Throwable) {
-//                    Log.d("@@ MainRepositoryImpl", "searchVideo / onFailure, $t")
-//                }
-//            })
+        return kakaoOpenApi.searchVideo(query = query, sort = sort, page = 1, size = 10) // max page 15
     }
 }
 
