@@ -23,6 +23,8 @@ class MyImageFragment: Fragment() {
     override fun onCreateView(inflater: LayoutInflater, container: ViewGroup?, savedInstanceState: Bundle?): View =
         FragmentMyImageBinding.inflate(inflater).apply {
             binding = this
+            binding.lifecycleOwner = viewLifecycleOwner
+            binding.view = viewModel
         }.root
 
     companion object {
