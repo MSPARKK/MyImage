@@ -6,12 +6,17 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.lifecycle.lifecycleScope
 import com.mspark.myimage.databinding.FragmentSearchBinding
 import com.mspark.myimage.viewmodel.MainViewModel
 import com.mspark.myimage.viewmodel.ViewModelFactory
 
 class SearchFragment: Fragment() {
     private lateinit var binding: FragmentSearchBinding
+
+    private val imageAdapter by lazy {
+        ImageAdapter()
+    }
 
     private val viewModel by lazy {
         ViewModelProvider(
@@ -29,6 +34,22 @@ class SearchFragment: Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        setImageAdapter()
+
+        setObserver()
+    }
+
+    private fun setObserver() {
+        viewModel.imageList.observe(viewLifecycleOwner) {
+            lifecycleScope.launchWhenCreated {
+                imageAdapter.submitList(it)
+            }
+        }
+    }
+
+    private fun setImageAdapter() {
+        binding.searchRecyclerView.adapter = imageAdapter
     }
 
     companion object {

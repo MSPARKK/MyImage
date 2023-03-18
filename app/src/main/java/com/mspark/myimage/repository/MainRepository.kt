@@ -8,9 +8,11 @@ import com.mspark.myimage.api.KakaoOpenApi
 import com.mspark.myimage.constants.StringConstants.*
 import com.mspark.myimage.data.ImageSearchResponse
 import retrofit2.Callback
+import retrofit2.Response
 
 interface MainRepository {
-    fun searchImage(query : String, sort : String)
+    suspend fun searchImage(query : String, sort : String): Response<ImageSearchResponse>
+    suspend fun searchVideo(query : String, sort : String): Response<ImageSearchResponse>
 }
 
 class MainRepositoryImpl(
@@ -18,8 +20,12 @@ class MainRepositoryImpl(
     private val localDataSource: MainLocalDataSource
 ): MainRepository {
 
-    override fun searchImage(query: String, sort: String) {
-        remoteDataSource.searchImage(query, sort)
+    override suspend fun searchImage(query: String, sort: String): Response<ImageSearchResponse> {
+        return remoteDataSource.searchImage(query, sort)
+    }
+
+    override suspend fun searchVideo(query: String, sort: String): Response<ImageSearchResponse> {
+        return remoteDataSource.searchVideo(query, sort)
     }
 
     companion object {
@@ -39,31 +45,56 @@ class MainRepositoryImpl(
 }
 
 interface MainRemoteDataSource {
-    fun searchImage(query : String, sort : String)
+    suspend fun searchImage(query : String, sort : String): Response<ImageSearchResponse>
+    suspend fun searchVideo(query : String, sort : String): Response<ImageSearchResponse>
 }
 
 class MainRemoteDataSourceImpl(
     private val kakaoOpenApi: KakaoOpenApi
 ): MainRemoteDataSource {
-    override fun searchImage(query: String, sort: String) {
-        kakaoOpenApi.searchImage(query = query, sort = sort, page = 1, size = 5)
-            .enqueue(object: Callback<ImageSearchResponse> {
-                override fun onResponse(
-                    call: retrofit2.Call<ImageSearchResponse>,
-                    response: retrofit2.Response<ImageSearchResponse>
-                ) {
-                    if (response.isSuccessful) {
-                        val imageSearchResponse = response.body()
-                        if (imageSearchResponse != null) {
-                            Log.d("@@ MainRepositoryImpl", "onResponse, imageSearchResponse : $imageSearchResponse")
-                        }
-                    }
-                }
+    override suspend fun searchImage(query: String, sort: String): Response<ImageSearchResponse> {
+        return kakaoOpenApi.searchImage(query = query, sort = sort, page = 1, size = 80)
+//            .enqueue(object: Callback<ImageSearchResponse> {
+//                override fun onResponse(
+//                    call: retrofit2.Call<ImageSearchResponse>,
+//                    response: retrofit2.Response<ImageSearchResponse>
+//                ) {
+//                    if (response.isSuccessful) {
+//
+//                        val imageSearchResponse = response.body()
+//                        if (imageSearchResponse != null) {
+//                            Log.d("@@ MainRepositoryImpl", "searchImage / onResponse, imageSearchResponse : $imageSearchResponse")
+//                        }
+//                    }
+//                }
+//
+//                override fun onFailure(call: retrofit2.Call<ImageSearchResponse>, t: Throwable) {
+//                    Log.d("@@ MainRepositoryImpl", "searchImage / onFailure, $t")
+//                }
+//            })
+    }
 
-                override fun onFailure(call: retrofit2.Call<ImageSearchResponse>, t: Throwable) {
-                    Log.d("@@ MainRepositoryImpl", "onFailure, $t")
-                }
-            })
+
+    override suspend fun searchVideo(query: String, sort: String): Response<ImageSearchResponse> {
+        return kakaoOpenApi.searchVideo(query = query, sort = sort, page = 1, size = 15)
+//            .enqueue(object: Callback<ImageSearchResponse> {
+//                override fun onResponse(
+//                    call: retrofit2.Call<ImageSearchResponse>,
+//                    response: retrofit2.Response<ImageSearchResponse>
+//                ) {
+//                    if (response.isSuccessful) {
+//
+//                        val imageSearchResponse = response.body()
+//                        if (imageSearchResponse != null) {
+//                            Log.d("@@ MainRepositoryImpl", "searchVideo / onResponse, imageSearchResponse : $imageSearchResponse")
+//                        }
+//                    }
+//                }
+//
+//                override fun onFailure(call: retrofit2.Call<ImageSearchResponse>, t: Throwable) {
+//                    Log.d("@@ MainRepositoryImpl", "searchVideo / onFailure, $t")
+//                }
+//            })
     }
 }
 

@@ -12,16 +12,35 @@
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:background="@color/teal_700">
+        android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/testSearchBtn"
+            android:id="@+id/imageSearchBtn"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:onClick="@{()->view.searchImage()}"/>
+            android:text="image"
+            android:onClick="@{()->view.searchImage()}"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+        <Button
+            android:id="@+id/videoSearchBtn"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:text="video"
+            android:onClick="@{()->view.searchVideo()}"
+            android:layout_marginTop="20dp"
+            app:layout_constraintTop_toBottomOf="@id/imageSearchBtn"/>
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/searchRecyclerView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:spanCount="3"
+            app:layoutManager="androidx.recyclerview.widget.GridLayoutManager" />
 
 
     </androidx.constraintlayout.widget.ConstraintLayout>
