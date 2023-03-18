@@ -14,4 +14,13 @@ class SearchFragment: Fragment() {
         FragmentSearchBinding.inflate(inflater).apply {
             binding = this
         }.root
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = SearchFragment().apply {
+            arguments = Bundle().apply {
+
+            }
+        }
+    }
 }

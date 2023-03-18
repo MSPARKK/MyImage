@@ -14,4 +14,13 @@ class MyImageFragment: Fragment() {
         FragmentMyImageBinding.inflate(inflater).apply {
             binding = this
         }.root
+
+    companion object {
+        @JvmStatic
+        fun newInstance() = MyImageFragment().apply {
+            arguments = Bundle().apply {
+
+            }
+        }
+    }
 }

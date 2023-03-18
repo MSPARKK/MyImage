@@ -2,6 +2,7 @@ package com.mspark.myimage
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import androidx.fragment.app.Fragment
 import com.mspark.myimage.databinding.ActivityMainBinding
 
 class MainActivity : AppCompatActivity() {
@@ -17,23 +18,24 @@ class MainActivity : AppCompatActivity() {
             setOnItemSelectedListener {
                 when(it.itemId) {
                     R.id.searchTab -> {
-                        supportFragmentManager.beginTransaction()
-                            .replace(com.mspark.myimage.R.id.mainContainer, MyImageFragment())
-                            .commit()
+                        moveFragment(SearchFragment.newInstance())
                         true
                     }
                     R.id.myImageTab -> {
-                        supportFragmentManager.beginTransaction()
-                            .replace(com.mspark.myimage.R.id.mainContainer, SearchFragment())
-                            .commit()
+                        moveFragment(MyImageFragment.newInstance())
                         true
                     }
                     else -> false
                 }
-
             }
 
             selectedItemId = R.id.searchTab
         }
+    }
+
+    private fun moveFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(R.id.mainContainer, fragment)
+            .commit()
     }
 }
