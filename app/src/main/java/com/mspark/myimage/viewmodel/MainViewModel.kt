@@ -36,24 +36,34 @@ class MainViewModel(
 
 
             val result1 = async {
-                repository.searchImage("강아지","accuracy")
+                repository.searchImage("강아지","recency")
             }
             val result2 = async {
-                repository.searchVideo("강아지","accuracy")
+                repository.searchVideo("강아지","recency")
             }
 
             val combinedResult = awaitAll(result1, result2)
 
+            val newList = ArrayList<KakaoImage>()
             combinedResult.forEach { response ->
                 if (response.isSuccessful) {
                     Log.d("@@ MainViewModel", "searchImage: ${response.body()?.documents}")
                     response.body()?.documents?.let {
 //                    _imageList.postValue(it)
-                        totalImageList.addAll(it)
-                        _imageList.postValue(totalImageList)
+
+                        newList.addAll(it)
                     }
                 }
             }
+
+            newList.sortBy {
+                it.dateTime
+            }
+            newList.reverse()
+
+
+            totalImageList.addAll(newList)
+            _imageList.postValue(totalImageList)
         }
     }
 

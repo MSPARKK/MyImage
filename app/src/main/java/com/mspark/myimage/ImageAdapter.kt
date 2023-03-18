@@ -1,8 +1,10 @@
 package com.mspark.myimage
 
 import android.content.Context
+import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.annotation.RequiresApi
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -42,6 +44,11 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
                 .load(kakaoImage.thumbnailUrl)
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(binding.itemImage)
+
+//            binding.itemTimeStamp.text = kakaoImage.dateTime
+
+            @RequiresApi(Build.VERSION_CODES.O)
+            binding.itemTimeStamp.text = kakaoImage.getTimeStamp()
         }
     }
 }
