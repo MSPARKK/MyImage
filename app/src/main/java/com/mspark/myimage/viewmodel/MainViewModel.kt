@@ -40,10 +40,10 @@ class MainViewModel(
     fun searchImage() {
         viewModelScope.launch {
             val deferredResponseImage = async {
-                repository.searchImage(query = query, sort = SORT_RECENCY, page = imagePage)
+                repository.searchImage(query = query, page = imagePage)
             }
             val deferredResponseVideo = async {
-                repository.searchVideo(query = query, sort = SORT_RECENCY, page = imagePage)
+                repository.searchVideo(query = query, page = imagePage)
             }
 
 
