@@ -6,6 +6,7 @@ import androidx.annotation.RequiresApi
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.repository.MainRepository
 import com.mspark.myimage.util.Constants.Shared.SEPARATOR
@@ -14,6 +15,7 @@ import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import java.util.*
+import kotlin.collections.ArrayList
 
 class MainViewModel(
     private val repository: MainRepository
@@ -21,9 +23,6 @@ class MainViewModel(
 
     private val _imageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
     val imageList: LiveData<List<KakaoImage>> = _imageList
-
-    private val _myImageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
-    val myImageList: LiveData<List<KakaoImage>> = _myImageList
 
     private val totalImageList = ArrayList<KakaoImage>()
     private val temporaryImageList = ArrayList<KakaoImage>()
@@ -38,6 +37,9 @@ class MainViewModel(
 
     private var query = ""
 
+    private val _myImageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
+    val myImageList: LiveData<List<KakaoImage>> = _myImageList
+
 
     private fun searchImage() {
         viewModelScope.launch {
@@ -49,13 +51,11 @@ class MainViewModel(
             }
 
 
-            // @@ 새로운 로직 테스트 - 앞으로 불러올 이미지도 고려해서 정렬
+            // 앞으로 불러올 이미지의 날짜도 고려해서 정렬
             val (responseImage, responseVideo) = awaitAll(deferredResponseImage, deferredResponseVideo)
 
             Log.d("@@ MainViewModel", "sort Test2| after / responseImage.isEnd : ${ responseImage.body()?.metaData?.isEnd} / responseVideo.isEnd : ${responseVideo.body()?.metaData?.isEnd}")
             Log.d("@@ MainViewModel", "sort Test2| after / responseImage.isSuccessful : ${responseImage.isSuccessful} / responseVideo.isSuccessful : ${responseVideo.isSuccessful}")
-
-
 
             if (responseImage.isSuccessful) {
                 val imageList = responseImage.body()?.documents
@@ -126,14 +126,6 @@ class MainViewModel(
         }
     }
 
-//    fun searchFaker() {
-//        searchNewQuery("페이커")
-//    }
-//
-//    fun searchPuppy() {
-//        searchNewQuery("강아지")
-//    }
-
     fun searchNewQuery(query: String) {
         this.query = query
 
@@ -165,7 +157,7 @@ class MainViewModel(
         searchImage()
     }
 
-    fun onClickLike(position: Int) {
+    fun onClickLikeOnSearch(position: Int) {
         Log.d("@@ MainViewModel", "onClickLike | position : $position")
 
         val image = totalImageList.removeAt(position)
@@ -199,8 +191,34 @@ class MainViewModel(
                 val kakaoImage = KakaoImage(thumbnailUrl = it, isMyImage = true)
                 myImageList.add(kakaoImage)
             }
-
             _myImageList.postValue(myImageList)
+        } else {
+            _myImageList.postValue(emptyList())
+        }
+    }
+
+    fun onClickLikeOnMyImage(position: Int) {
+        Log.d("@@ MainViewModel", "onClickLikeMyImage | position : $position")
+
+        val myList: ArrayList<KakaoImage> = (_myImageList.value?: return) as ArrayList<KakaoImage>
+
+        Log.d("@@ MainViewModel", "onClickLikeMyImage | myList.size : ${myList.size}")
+
+        if (myList.size <= position) return
+
+        myList[position].thumbnailUrl?.let {
+            Log.d("@@ MainViewModel", "onClickLikeMyImage | myList[position].thumbnailUrl : $it")
+
+            totalImageList.indexOfFirst { kakaoImage ->
+                kakaoImage.thumbnailUrl == it
+            }.let { position ->
+                if (position != NO_POSITION) {
+                    onClickLikeOnSearch(position)
+                } else {
+                    repository.updateMyImage(it)
+                    getMyImage()
+                }
+            }
         }
     }
 

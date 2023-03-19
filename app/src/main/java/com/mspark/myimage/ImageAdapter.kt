@@ -3,7 +3,6 @@ package com.mspark.myimage
 import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
@@ -28,8 +27,7 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
         }
     }
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
-        val sampleBackgroundSubject = getItem(position)
-        holder.bind(sampleBackgroundSubject, position)
+        holder.bind(getItem(position))
     }
 
     override fun submitList(list: List<KakaoImage>?) {
@@ -52,9 +50,9 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
         private val type: String,
         private val onClickLike: ((Int) -> Unit)? = null
     ): RecyclerView.ViewHolder(binding.root) {
-        fun bind(kakaoImage: KakaoImage, position: Int) {
-            binding.root.setOnClickListener {
-                onClickLike?.invoke(position)
+        fun bind(kakaoImage: KakaoImage) {
+            binding.itemLikeImg.setOnClickListener {
+                onClickLike?.invoke(layoutPosition)
             }
 
             Glide.with(context)

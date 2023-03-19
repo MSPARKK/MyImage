@@ -55,7 +55,7 @@ class SearchFragment: Fragment() {
         imageAdapter.apply {
             onClickLike = { position ->
 
-                viewModel.onClickLike(position)
+                viewModel.onClickLikeOnSearch(position)
             }
         }
 

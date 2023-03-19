@@ -51,7 +51,7 @@ class MyImageFragment: Fragment() {
         imageAdapter.apply {
             onClickLike = { position ->
 
-//                viewModel.onClickLike(position)
+                viewModel.onClickLikeOnMyImage(position)
             }
         }
     }
