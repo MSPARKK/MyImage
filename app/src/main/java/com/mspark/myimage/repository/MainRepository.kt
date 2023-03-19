@@ -2,18 +2,23 @@ package com.mspark.myimage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mspark.myimage.api.KakaoOpenApi
-import com.mspark.myimage.util.Constants.*
 import com.mspark.myimage.data.ImageSearchResponse
 import com.mspark.myimage.util.Constants.KakaoApi.IMAGE_SIZE
 import com.mspark.myimage.util.Constants.KakaoApi.SORT_RECENCY
 import com.mspark.myimage.util.Constants.KakaoApi.VIDEO_SIZE
+import com.mspark.myimage.util.Constants.Shared.KEY_MY_IMAGE_LIST
+import com.mspark.myimage.util.Constants.Shared.SAVE_NAME
+import com.mspark.myimage.util.Constants.Shared.SEPERATOR
 import retrofit2.Response
 
 interface MainRepository {
     suspend fun searchImage(query : String, page: Int): Response<ImageSearchResponse>
     suspend fun searchVideo(query : String, page: Int): Response<ImageSearchResponse>
+
+    fun updateMyImage(imageUrl: String)
 }
 
 class MainRepositoryImpl(
@@ -29,6 +34,10 @@ class MainRepositoryImpl(
         return remoteDataSource.searchVideo(query, page)
     }
 
+    override fun updateMyImage(imageUrl: String) {
+        localDataSource.updateMyImage(imageUrl)
+    }
+
     companion object {
         @JvmStatic
         fun getRepository(context: Context): MainRepositoryImpl {
@@ -37,7 +46,7 @@ class MainRepositoryImpl(
 
             val remoteDataSource: MainRemoteDataSource = MainRemoteDataSourceImpl(kakaoOpenApi)
 
-            val sharedPreferences = context.getSharedPreferences(Shared.SAVE_NAME, AppCompatActivity.MODE_PRIVATE)
+            val sharedPreferences = context.getSharedPreferences(SAVE_NAME, AppCompatActivity.MODE_PRIVATE)
             val localDataSource: MainLocalDataSource = MainLocalDataSourceImpl(sharedPreferences)
 
             return MainRepositoryImpl(remoteDataSource, localDataSource)
@@ -64,11 +73,32 @@ class MainRemoteDataSourceImpl(
 }
 
 interface MainLocalDataSource {
-
+    fun updateMyImage(imageUrl: String)
 }
 
 class MainLocalDataSourceImpl(
     private val sharedPreferences: SharedPreferences
 ): MainLocalDataSource {
+    private fun saveStringShared(key: String, value: String): Boolean = sharedPreferences.edit().putString(key, value).commit()
+    private fun getStringShared(key: String, default: String = "") = sharedPreferences.getString(key, default) ?: default
 
+
+    override fun updateMyImage(imageUrl: String) {
+
+        val myImageList = getStringShared(KEY_MY_IMAGE_LIST)
+        myImageList.contains(imageUrl).let {
+            if (it) {
+                // 이미 저장 되어 있는 경우 -> 삭제
+                val newMyImageList = myImageList.replace("$SEPERATOR$imageUrl", "")
+                saveStringShared(KEY_MY_IMAGE_LIST, newMyImageList)
+            } else {
+                // 저장 되어 있지 않은 경우 -> 저장
+                saveStringShared(KEY_MY_IMAGE_LIST, "$myImageList$SEPERATOR$imageUrl")
+            }
+        }
+
+        // @@ test
+        val testMyImageList = getStringShared(KEY_MY_IMAGE_LIST)
+        Log.d("@@ MainLocalDataSourceImpl", "testMyImageList : $testMyImageList")
+    }
 }

@@ -155,6 +155,8 @@ class MainViewModel(
         val image = totalImageList.removeAt(position)
         val newImage = image.copy(isMyImage = !image.isMyImage)
 
+        newImage.thumbnailUrl?.let { repository.updateMyImage(it) }
+
         totalImageList.add(position, newImage)
         _imageList.postValue(totalImageList)
     }

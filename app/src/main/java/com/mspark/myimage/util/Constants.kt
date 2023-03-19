@@ -4,6 +4,10 @@ class Constants {
 
     object Shared {
         const val SAVE_NAME = "my_image_share"
+
+        const val KEY_MY_IMAGE_LIST = "my_image_list"
+
+        const val SEPERATOR = "|"
     }
 
     object KakaoApi {
