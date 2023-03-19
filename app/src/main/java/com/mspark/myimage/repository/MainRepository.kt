@@ -2,11 +2,12 @@ package com.mspark.myimage.repository
 
 import android.content.Context
 import android.content.SharedPreferences
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mspark.myimage.api.KakaoOpenApi
-import com.mspark.myimage.constants.StringConstants.*
+import com.mspark.myimage.util.Constants.*
 import com.mspark.myimage.data.ImageSearchResponse
+import com.mspark.myimage.util.Constants.KakaoApi.IMAGE_SIZE
+import com.mspark.myimage.util.Constants.KakaoApi.VIDEO_SIZE
 import retrofit2.Response
 
 interface MainRepository {
@@ -61,12 +62,12 @@ class MainRemoteDataSourceImpl(
 
 
     override suspend fun searchImage(query: String, sort: String, page: Int): Response<ImageSearchResponse> {
-        return kakaoOpenApi.searchImage(query = query, sort = sort, page = page, size = 10) // max page 80
+        return kakaoOpenApi.searchImage(query = query, sort = sort, page = page, size = IMAGE_SIZE)
     }
 
 
     override suspend fun searchVideo(query: String, sort: String, page: Int): Response<ImageSearchResponse> {
-        return kakaoOpenApi.searchVideo(query = query, sort = sort, page = page, size = 10) // max page 15
+        return kakaoOpenApi.searchVideo(query = query, sort = sort, page = page, size = VIDEO_SIZE)
     }
 
 //    override suspend fun getImages(query: String, sort: String): Response<ImageSearchResponse> {
