@@ -19,6 +19,7 @@ interface MainRepository {
     suspend fun searchVideo(query : String, page: Int): Response<ImageSearchResponse>
 
     fun updateMyImage(imageUrl: String)
+    fun getMyImageListString(): String
 }
 
 class MainRepositoryImpl(
@@ -36,6 +37,10 @@ class MainRepositoryImpl(
 
     override fun updateMyImage(imageUrl: String) {
         localDataSource.updateMyImage(imageUrl)
+    }
+
+    override fun getMyImageListString(): String {
+        return localDataSource.getMyImageListString()
     }
 
     companion object {
@@ -74,6 +79,7 @@ class MainRemoteDataSourceImpl(
 
 interface MainLocalDataSource {
     fun updateMyImage(imageUrl: String)
+    fun getMyImageListString(): String
 }
 
 class MainLocalDataSourceImpl(
@@ -100,5 +106,9 @@ class MainLocalDataSourceImpl(
         // @@ test
         val testMyImageList = getStringShared(KEY_MY_IMAGE_LIST)
         Log.d("@@ MainLocalDataSourceImpl", "testMyImageList : $testMyImageList")
+    }
+
+    override fun getMyImageListString(): String {
+        return getStringShared(KEY_MY_IMAGE_LIST)
     }
 }

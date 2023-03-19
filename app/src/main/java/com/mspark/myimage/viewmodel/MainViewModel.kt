@@ -102,6 +102,20 @@ class MainViewModel(
             Log.d("@@ MainViewModel", "sort Test| after / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
             Log.d("@@ MainViewModel", "sort Test| after / temporaryImageList / ${temporaryImageList.size} / $temporaryImageList")
 
+            // 이미 좋아요 한 이미지는 isMyImage = true 로 변경
+            val myImageListString = repository.getMyImageListString()
+
+            temporaryImageList.forEach {
+                it.thumbnailUrl?.let { thumbnailUrl ->
+                    Log.d("@@ MainViewModel", "sort Test3| after / ${myImageListString.contains(thumbnailUrl)}")
+
+                    if (myImageListString.contains(thumbnailUrl)) {
+                        it.isMyImage = true
+                    }
+                }
+            }
+
+
             totalImageList.addAll(temporaryImageList)
             temporaryImageList.clear()
             _imageList.postValue(totalImageList)
