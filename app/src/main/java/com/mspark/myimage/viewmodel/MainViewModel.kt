@@ -45,7 +45,6 @@ class MainViewModel(
             }
 
 
-
             // @@ 새로운 로직 테스트 - 앞으로 불러올 이미지도 고려해서 정렬
             val (res1, res2) = awaitAll(result1, result2)
 
@@ -86,35 +85,27 @@ class MainViewModel(
             Log.d("@@ MainViewModel", "sort Test| after / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
             Log.d("@@ MainViewModel", "sort Test| after / temporaryImageList / ${temporaryImageList.size} / $temporaryImageList")
 
+            Log.d("@@ MainViewModel", "sort Test2| after / res1.isEnd : ${ res1.body()?.metaData?.isEnd} / res2.isEnd : ${ res2.body()?.metaData?.isEnd}")
+            Log.d("@@ MainViewModel", "sort Test2| after / res1.isSuccessful : ${res1.isSuccessful} / res2.isSuccessful : ${res2.isSuccessful}")
 
+            if (!res2.isSuccessful) {
+                if (videoQueue.isEmpty()) {
+                    temporaryImageList.addAll(imageQueue)
+                    imageQueue.clear()
+                }
+            }
+
+            if (!res1.isSuccessful) {
+                if (imageQueue.isEmpty()) {
+                    temporaryImageList.addAll(videoQueue)
+                    videoQueue.clear()
+                }
+            }
 
             totalImageList.addAll(temporaryImageList)
             temporaryImageList.clear()
             _imageList.postValue(totalImageList)
 
-
-            // @@  기존 로직 - 불러온 데이터만 정렬
-//            val combinedResult = awaitAll(result1, result2)
-//            val newList = ArrayList<KakaoImage>()
-//            combinedResult.forEach { response ->
-//                if (response.isSuccessful) {
-//                    Log.d("@@ MainViewModel", "searchImage: ${response.body()?.documents}")
-//                    response.body()?.documents?.let {
-//                        newList.addAll(it)
-//                    }
-//                }
-//            }
-//
-//            // 최신 순으로 정렬
-//            newList.sortBy {
-//                it.dateTime
-//            }
-//            newList.reverse()
-//
-//
-//            totalImageList.addAll(newList)
-//            _imageList.postValue(totalImageList)
-//
             isLoading = false
         }
     }
