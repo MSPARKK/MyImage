@@ -11,7 +11,7 @@ import com.mspark.myimage.util.Constants.KakaoApi.SORT_RECENCY
 import com.mspark.myimage.util.Constants.KakaoApi.VIDEO_SIZE
 import com.mspark.myimage.util.Constants.Shared.KEY_MY_IMAGE_LIST
 import com.mspark.myimage.util.Constants.Shared.SAVE_NAME
-import com.mspark.myimage.util.Constants.Shared.SEPERATOR
+import com.mspark.myimage.util.Constants.Shared.SEPARATOR
 import retrofit2.Response
 
 interface MainRepository {
@@ -95,11 +95,11 @@ class MainLocalDataSourceImpl(
         myImageList.contains(imageUrl).let {
             if (it) {
                 // 이미 저장 되어 있는 경우 -> 삭제
-                val newMyImageList = myImageList.replace("$SEPERATOR$imageUrl", "")
+                val newMyImageList = myImageList.replace("$SEPARATOR$imageUrl", "")
                 saveStringShared(KEY_MY_IMAGE_LIST, newMyImageList)
             } else {
                 // 저장 되어 있지 않은 경우 -> 저장
-                saveStringShared(KEY_MY_IMAGE_LIST, "$myImageList$SEPERATOR$imageUrl")
+                saveStringShared(KEY_MY_IMAGE_LIST, "$myImageList$SEPARATOR$imageUrl")
             }
         }
 

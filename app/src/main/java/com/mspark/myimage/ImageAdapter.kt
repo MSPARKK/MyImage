@@ -3,9 +3,11 @@ package com.mspark.myimage
 import android.content.Context
 import android.os.Build
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -13,13 +15,15 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.databinding.ItemImageBinding
+import com.mspark.myimage.util.Constants.Fragment.MY_IMAGE
+import com.mspark.myimage.util.Constants.Fragment.SEARCH
 
-class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPARATOR) {
+class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPARATOR) {
     var onClickLike: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding, parent.context) {
+        return ImageViewHolder(binding, parent.context, type) {
             onClickLike?.invoke(it)
         }
     }
@@ -45,10 +49,10 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
     class ImageViewHolder(
         private val binding: ItemImageBinding,
         private val context: Context,
+        private val type: String,
         private val onClickLike: ((Int) -> Unit)? = null
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(kakaoImage: KakaoImage, position: Int) {
-
             binding.root.setOnClickListener {
                 onClickLike?.invoke(position)
             }
@@ -58,7 +62,17 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
                 .diskCacheStrategy(DiskCacheStrategy.ALL)
                 .into(binding.itemImage)
 
-//            binding.itemTimeStamp.text = kakaoImage.dateTime
+            if (kakaoImage.isMyImage) {
+                binding.itemLikeImg.setImageResource(R.drawable.icon_favorite)
+            } else {
+                binding.itemLikeImg.setImageResource(R.drawable.icon_favorite_border)
+            }
+
+            setItemTimeStamp(kakaoImage)
+        }
+
+        private fun setItemTimeStamp(kakaoImage: KakaoImage) {
+            if (type == MY_IMAGE) return
 
             @RequiresApi(Build.VERSION_CODES.O)
             binding.itemTimeStamp.text = kakaoImage.getTimeStamp()
@@ -69,13 +83,12 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
             } else {
                 binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.black))
             }
+        }
 
-
-            if (kakaoImage.isMyImage) {
-                binding.itemLikeImg.setImageResource(R.drawable.icon_favorite)
-            } else {
-                binding.itemLikeImg.setImageResource(R.drawable.icon_favorite_border)
-            }
+        init {
+            binding.itemTimeStamp.isVisible = type == SEARCH
         }
     }
+
+
 }

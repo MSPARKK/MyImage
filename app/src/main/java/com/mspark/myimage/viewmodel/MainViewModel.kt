@@ -8,13 +8,12 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.repository.MainRepository
-import com.mspark.myimage.util.Constants.KakaoApi.SORT_RECENCY
+import com.mspark.myimage.util.Constants.Shared.SEPARATOR
 import com.mspark.myimage.util.SingleLiveEvent
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
 import java.util.*
-import kotlin.collections.ArrayList
 
 class MainViewModel(
     private val repository: MainRepository
@@ -22,6 +21,9 @@ class MainViewModel(
 
     private val _imageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
     val imageList: LiveData<List<KakaoImage>> = _imageList
+
+    private val _myImageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
+    val myImageList: LiveData<List<KakaoImage>> = _myImageList
 
     private val totalImageList = ArrayList<KakaoImage>()
     private val temporaryImageList = ArrayList<KakaoImage>()
@@ -37,7 +39,7 @@ class MainViewModel(
     private var query = ""
 
 
-    fun searchImage() {
+    private fun searchImage() {
         viewModelScope.launch {
             val deferredResponseImage = async {
                 repository.searchImage(query = query, page = imagePage)
@@ -169,10 +171,37 @@ class MainViewModel(
         val image = totalImageList.removeAt(position)
         val newImage = image.copy(isMyImage = !image.isMyImage)
 
-        newImage.thumbnailUrl?.let { repository.updateMyImage(it) }
+        newImage.thumbnailUrl?.let {
+            repository.updateMyImage(it)
+            getMyImage()
+        }
 
         totalImageList.add(position, newImage)
         _imageList.postValue(totalImageList)
+    }
+
+
+    fun getMyImage() {
+        val myImageListString = repository.getMyImageListString()
+
+        Log.d("@@ MainViewModel", "getMyImage | myImageListString : $myImageListString")
+
+        val resultArray = myImageListString.split(SEPARATOR)
+
+        Log.d("@@ MainViewModel", "getMyImage | resultArray.size : ${resultArray.size}")
+
+        if (resultArray.size > 1) {
+            val myImageList = ArrayList<KakaoImage>()
+
+            resultArray.forEach {
+                if (it.isEmpty()) return@forEach
+
+                val kakaoImage = KakaoImage(thumbnailUrl = it, isMyImage = true)
+                myImageList.add(kakaoImage)
+            }
+
+            _myImageList.postValue(myImageList)
+        }
     }
 
 }
