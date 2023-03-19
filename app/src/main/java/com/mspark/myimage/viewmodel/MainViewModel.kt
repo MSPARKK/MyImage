@@ -149,4 +149,14 @@ class MainViewModel(
         searchImage()
     }
 
+    fun onClickLike(position: Int) {
+        Log.d("@@ MainViewModel", "onClickLike | position : $position")
+
+        val image = totalImageList.removeAt(position)
+        val newImage = image.copy(isMyImage = !image.isMyImage)
+
+        totalImageList.add(position, newImage)
+        _imageList.postValue(totalImageList)
+    }
+
 }

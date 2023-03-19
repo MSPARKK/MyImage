@@ -1,6 +1,7 @@
 package com.mspark.myimage
 
 import android.content.Context
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -8,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
+import androidx.annotation.RequiresApi
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -57,7 +59,15 @@ class SearchFragment: Fragment() {
     }
 
     private fun setImageAdapter() {
+        binding.searchRecyclerView.itemAnimator = null
         binding.searchRecyclerView.adapter = imageAdapter
+
+        imageAdapter.apply {
+            onClickLike = { position ->
+
+                viewModel.onClickLike(position)
+            }
+        }
 
         binding.searchRecyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
             override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {

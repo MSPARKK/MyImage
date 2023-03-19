@@ -15,10 +15,13 @@ import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.databinding.ItemImageBinding
 
 class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPARATOR) {
+    var onClickLike: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding, parent.context)
+        return ImageViewHolder(binding, parent.context) {
+            onClickLike?.invoke(it)
+        }
     }
     override fun onBindViewHolder(holder: ImageViewHolder, position: Int) {
         val sampleBackgroundSubject = getItem(position)
@@ -41,9 +44,14 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
 
     class ImageViewHolder(
         private val binding: ItemImageBinding,
-        private val context: Context
+        private val context: Context,
+        private val onClickLike: ((Int) -> Unit)? = null
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(kakaoImage: KakaoImage, position: Int) {
+
+            binding.root.setOnClickListener {
+                onClickLike?.invoke(position)
+            }
 
             Glide.with(context)
                 .load(kakaoImage.thumbnailUrl)
@@ -60,6 +68,13 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
                 binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.purple_500))
             } else {
                 binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.black))
+            }
+
+
+            if (kakaoImage.isMyImage) {
+                binding.itemLikeImg.setImageResource(R.drawable.icon_favorite)
+            } else {
+                binding.itemLikeImg.setImageResource(R.drawable.icon_favorite_border)
             }
         }
     }
