@@ -1,10 +1,13 @@
 package com.mspark.myimage
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.EditorInfo
+import android.view.inputmethod.InputMethodManager
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
@@ -40,6 +43,8 @@ class SearchFragment: Fragment() {
         setImageAdapter()
 
         setObserver()
+
+        setEditText()
     }
 
     private fun setObserver() {
@@ -64,6 +69,21 @@ class SearchFragment: Fragment() {
                 }
             }
         })
+    }
+
+    private fun setEditText() {
+        binding.searchEdit.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_SEARCH) {
+                viewModel.searchNewQuery(binding.searchEdit.text.toString())
+                hideKeyboard()
+            }
+            true
+        }
+    }
+
+    private fun hideKeyboard() {
+        val imm = context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        imm.hideSoftInputFromWindow(binding.searchEdit.windowToken, 0)
     }
 
     companion object {

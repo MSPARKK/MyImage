@@ -9,7 +9,6 @@ import androidx.lifecycle.viewModelScope
 import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.repository.MainRepository
 import com.mspark.myimage.util.Constants.KakaoApi.SORT_RECENCY
-import com.mspark.myimage.util.Constants.KakaoApi.TEST_QUERY
 import com.mspark.myimage.util.SingleLiveEvent
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
@@ -35,7 +34,7 @@ class MainViewModel(
     private var imagePage = 1 // 1 ~ 50
     private var videoPage = 1 // 1 ~ 15
 
-    private var query = TEST_QUERY
+    private var query = ""
 
 
     fun searchImage() {
@@ -111,17 +110,17 @@ class MainViewModel(
         }
     }
 
-    fun searchFaker() {
-        query= "페이커"
-        searchNewQuery()
-    }
+//    fun searchFaker() {
+//        searchNewQuery("페이커")
+//    }
+//
+//    fun searchPuppy() {
+//        searchNewQuery("강아지")
+//    }
 
-    fun searchPuppy() {
-        query = "강아지"
-        searchNewQuery()
-    }
+    fun searchNewQuery(query: String) {
+        this.query = query
 
-    private fun searchNewQuery() {
         isLoading = true
 
         _imageList.postValue(emptyList())
@@ -139,6 +138,8 @@ class MainViewModel(
     }
 
     fun getMoreImage() {
+        if (query.isEmpty()) return
+
         if (isLoading) return
         isLoading = true
 

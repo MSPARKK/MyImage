@@ -7,10 +7,6 @@ class Constants {
     }
 
     object KakaoApi {
-//        const val TEST_QUERY = "강아지"
-        const val TEST_QUERY = "유튜브"
-
-        const val SORT_ACCURACY = "accuracy"
         const val SORT_RECENCY = "recency"
 
         const val IMAGE_SIZE = 10  // 1 ~ 80
