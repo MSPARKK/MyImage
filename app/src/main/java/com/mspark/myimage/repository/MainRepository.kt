@@ -10,8 +10,8 @@ import com.mspark.myimage.data.ImageSearchResponse
 import retrofit2.Response
 
 interface MainRepository {
-    suspend fun searchImage(query : String, sort : String): Response<ImageSearchResponse>
-    suspend fun searchVideo(query : String, sort : String): Response<ImageSearchResponse>
+    suspend fun searchImage(query : String, sort : String, page: Int): Response<ImageSearchResponse>
+    suspend fun searchVideo(query : String, sort : String, page: Int): Response<ImageSearchResponse>
 
 //    suspend fun getImages(query : String, sort : String): Response<ImageSearchResponse>
 }
@@ -21,12 +21,12 @@ class MainRepositoryImpl(
     private val localDataSource: MainLocalDataSource
 ): MainRepository {
 
-    override suspend fun searchImage(query: String, sort: String): Response<ImageSearchResponse> {
-        return remoteDataSource.searchImage(query, sort)
+    override suspend fun searchImage(query: String, sort: String, page: Int): Response<ImageSearchResponse> {
+        return remoteDataSource.searchImage(query, sort, page)
     }
 
-    override suspend fun searchVideo(query: String, sort: String): Response<ImageSearchResponse> {
-        return remoteDataSource.searchVideo(query, sort)
+    override suspend fun searchVideo(query: String, sort: String, page: Int): Response<ImageSearchResponse> {
+        return remoteDataSource.searchVideo(query, sort, page)
     }
 
 //    override suspend fun getImages(query: String, sort: String): Response<ImageSearchResponse> {
@@ -50,8 +50,8 @@ class MainRepositoryImpl(
 }
 
 interface MainRemoteDataSource {
-    suspend fun searchImage(query : String, sort : String): Response<ImageSearchResponse>
-    suspend fun searchVideo(query : String, sort : String): Response<ImageSearchResponse>
+    suspend fun searchImage(query : String, sort : String, page: Int): Response<ImageSearchResponse>
+    suspend fun searchVideo(query : String, sort : String, page: Int): Response<ImageSearchResponse>
 //    suspend fun getImages(query : String, sort : String): Response<ImageSearchResponse>
 }
 
@@ -60,13 +60,13 @@ class MainRemoteDataSourceImpl(
 ): MainRemoteDataSource {
 
 
-    override suspend fun searchImage(query: String, sort: String): Response<ImageSearchResponse> {
-        return kakaoOpenApi.searchImage(query = query, sort = sort, page = 1, size = 10) // max page 80
+    override suspend fun searchImage(query: String, sort: String, page: Int): Response<ImageSearchResponse> {
+        return kakaoOpenApi.searchImage(query = query, sort = sort, page = page, size = 10) // max page 80
     }
 
 
-    override suspend fun searchVideo(query: String, sort: String): Response<ImageSearchResponse> {
-        return kakaoOpenApi.searchVideo(query = query, sort = sort, page = 1, size = 10) // max page 15
+    override suspend fun searchVideo(query: String, sort: String, page: Int): Response<ImageSearchResponse> {
+        return kakaoOpenApi.searchVideo(query = query, sort = sort, page = page, size = 10) // max page 15
     }
 
 //    override suspend fun getImages(query: String, sort: String): Response<ImageSearchResponse> {

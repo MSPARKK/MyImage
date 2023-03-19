@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
+import androidx.recyclerview.widget.RecyclerView
 import com.mspark.myimage.databinding.FragmentSearchBinding
 import com.mspark.myimage.viewmodel.MainViewModel
 import com.mspark.myimage.viewmodel.ViewModelFactory
@@ -44,7 +45,7 @@ class SearchFragment: Fragment() {
     private fun setObserver() {
         viewModel.imageList.observe(viewLifecycleOwner) {
             lifecycleScope.launchWhenCreated {
-                Log.d("@@ SearchFragment", "setObserver, imageList: $it")
+                Log.d("@@ SearchFragment", "setObserver, imageList: ${it.size}")
                 imageAdapter.submitList(it)
             }
         }
@@ -52,6 +53,17 @@ class SearchFragment: Fragment() {
 
     private fun setImageAdapter() {
         binding.searchRecyclerView.adapter = imageAdapter
+
+        binding.searchRecyclerView.addOnScrollListener(object: RecyclerView.OnScrollListener() {
+            override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+                super.onScrollStateChanged(recyclerView, newState)
+
+                if (!recyclerView.canScrollVertically(1)) {
+                    Log.d("@@ SearchFragment", "setImageAdapter, onScrollStateChanged, canScrollVertically: false")
+                    viewModel.getMoreImage()
+                }
+            }
+        })
     }
 
     companion object {

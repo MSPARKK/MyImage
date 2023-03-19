@@ -24,6 +24,10 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
         holder.bind(sampleBackgroundSubject, position)
     }
 
+    override fun submitList(list: List<KakaoImage>?) {
+        super.submitList(list?.let { ArrayList(it) })
+    }
+
     companion object {
         val COMPARATOR = object : DiffUtil.ItemCallback<KakaoImage>() {
             override fun areContentsTheSame(oldItem: KakaoImage, newItem: KakaoImage): Boolean =

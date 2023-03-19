@@ -19,6 +19,10 @@ class MainViewModel(
     val imageList: LiveData<List<KakaoImage>> = _imageList
     private val totalImageList = ArrayList<KakaoImage>()
 
+    private var isLoading = false
+
+    private var imagePage = 1
+    private var videoPage = 1
 
     fun searchImage() {
         viewModelScope.launch {
@@ -36,10 +40,10 @@ class MainViewModel(
 
 
             val result1 = async {
-                repository.searchImage("강아지","recency")
+                repository.searchImage("강아지","recency", imagePage)
             }
             val result2 = async {
-                repository.searchVideo("강아지","recency")
+                repository.searchVideo("강아지","recency", videoPage)
             }
 
             val combinedResult = awaitAll(result1, result2)
@@ -49,8 +53,6 @@ class MainViewModel(
                 if (response.isSuccessful) {
                     Log.d("@@ MainViewModel", "searchImage: ${response.body()?.documents}")
                     response.body()?.documents?.let {
-//                    _imageList.postValue(it)
-
                         newList.addAll(it)
                     }
                 }
@@ -64,12 +66,14 @@ class MainViewModel(
 
             totalImageList.addAll(newList)
             _imageList.postValue(totalImageList)
+
+            isLoading = false
         }
     }
 
     fun searchVideo() {
         viewModelScope.launch {
-            val response = repository.searchVideo("강아지","accuracy")
+            val response = repository.searchVideo("강아지","accuracy", videoPage)
             if (response.isSuccessful) {
                 Log.d("@@ MainViewModel", "searchImage: ${response.body()?.documents}")
                 response.body()?.documents?.let {
@@ -82,4 +86,16 @@ class MainViewModel(
             }
         }
     }
+
+    fun getMoreImage() {
+        if (isLoading) return
+        isLoading = true
+
+        imagePage++
+        videoPage++
+
+        searchImage()
+
+    }
+
 }
