@@ -37,28 +37,43 @@ class MainViewModel(
 
     fun searchImage() {
         viewModelScope.launch {
-            val result1 = async {
+            val deferredResponseImage = async {
                 repository.searchImage(query = TEST_QUERY, sort = SORT_RECENCY, page = imagePage)
             }
-            val result2 = async {
+            val deferredResponseVideo = async {
                 repository.searchVideo(query = TEST_QUERY, sort = SORT_RECENCY, page = imagePage)
             }
 
 
             // @@ 새로운 로직 테스트 - 앞으로 불러올 이미지도 고려해서 정렬
-            val (res1, res2) = awaitAll(result1, result2)
+            val (responseImage, responseVideo) = awaitAll(deferredResponseImage, deferredResponseVideo)
 
-            if (res1.isSuccessful) {
-                val imageList = res1.body()?.documents
+            Log.d("@@ MainViewModel", "sort Test2| after / responseImage.isEnd : ${ responseImage.body()?.metaData?.isEnd} / responseVideo.isEnd : ${responseVideo.body()?.metaData?.isEnd}")
+            Log.d("@@ MainViewModel", "sort Test2| after / responseImage.isSuccessful : ${responseImage.isSuccessful} / responseVideo.isSuccessful : ${responseVideo.isSuccessful}")
+
+
+
+            if (responseImage.isSuccessful) {
+                val imageList = responseImage.body()?.documents
                 if (imageList != null) {
                     imageQueue.addAll(imageList)
                 }
+            } else {
+                if (imageQueue.isEmpty()) {
+                    temporaryImageList.addAll(videoQueue)
+                    videoQueue.clear()
+                }
             }
 
-            if (res2.isSuccessful) {
-                val imageList = res2.body()?.documents
+            if (responseVideo.isSuccessful) {
+                val imageList = responseVideo.body()?.documents
                 if (imageList != null) {
                     videoQueue.addAll(imageList)
+                }
+            } else {
+                if (videoQueue.isEmpty()) {
+                    temporaryImageList.addAll(imageQueue)
+                    imageQueue.clear()
                 }
             }
 
@@ -84,23 +99,6 @@ class MainViewModel(
 
             Log.d("@@ MainViewModel", "sort Test| after / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
             Log.d("@@ MainViewModel", "sort Test| after / temporaryImageList / ${temporaryImageList.size} / $temporaryImageList")
-
-            Log.d("@@ MainViewModel", "sort Test2| after / res1.isEnd : ${ res1.body()?.metaData?.isEnd} / res2.isEnd : ${ res2.body()?.metaData?.isEnd}")
-            Log.d("@@ MainViewModel", "sort Test2| after / res1.isSuccessful : ${res1.isSuccessful} / res2.isSuccessful : ${res2.isSuccessful}")
-
-            if (!res2.isSuccessful) {
-                if (videoQueue.isEmpty()) {
-                    temporaryImageList.addAll(imageQueue)
-                    imageQueue.clear()
-                }
-            }
-
-            if (!res1.isSuccessful) {
-                if (imageQueue.isEmpty()) {
-                    temporaryImageList.addAll(videoQueue)
-                    videoQueue.clear()
-                }
-            }
 
             totalImageList.addAll(temporaryImageList)
             temporaryImageList.clear()
