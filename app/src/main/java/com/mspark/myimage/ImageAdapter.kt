@@ -5,6 +5,7 @@ import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.annotation.RequiresApi
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -53,6 +54,13 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
 
             @RequiresApi(Build.VERSION_CODES.O)
             binding.itemTimeStamp.text = kakaoImage.getTimeStamp()
+
+            // @@ 잠깐! todo : test 로직 삭제
+            if (kakaoImage.url != null) {
+                binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.purple_500))
+            } else {
+                binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.black))
+            }
         }
     }
 }

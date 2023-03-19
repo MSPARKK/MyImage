@@ -7,7 +7,7 @@ class Constants {
     }
 
     object KakaoApi {
-        const val TEST_QUERY = "강아지"
+        const val TEST_QUERY = "페이커"
 
         const val SORT_ACCURACY = "accuracy"
         const val SORT_RECENCY = "recency"

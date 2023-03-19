@@ -72,24 +72,28 @@ class MainViewModel(
 
                 if (image != null && video != null) {
                     if (image.getTimeStamp() > video.getTimeStamp()) {
-                        imageQueue.poll()?.let { temporaryImageList.add(it) }
+                        imageQueue.poll()?.let {
+                            temporaryImageList.add(it)
+                        }
                     } else {
-                        videoQueue.poll()?.let { temporaryImageList.add(it) }
+                        videoQueue.poll()?.let {
+                            temporaryImageList.add(it)
+                        }
                     }
                 }
             }
 
             Log.d("@@ MainViewModel", "sort Test| after / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
-            Log.d("@@ MainViewModel", "sort Test| after / temporaryImageList $temporaryImageList")
+            Log.d("@@ MainViewModel", "sort Test| after / temporaryImageList / ${temporaryImageList.size} / $temporaryImageList")
 
 
 
             totalImageList.addAll(temporaryImageList)
+            temporaryImageList.clear()
             _imageList.postValue(totalImageList)
 
 
             // @@  기존 로직 - 불러온 데이터만 정렬
-
 //            val combinedResult = awaitAll(result1, result2)
 //            val newList = ArrayList<KakaoImage>()
 //            combinedResult.forEach { response ->
@@ -110,7 +114,7 @@ class MainViewModel(
 //
 //            totalImageList.addAll(newList)
 //            _imageList.postValue(totalImageList)
-
+//
             isLoading = false
         }
     }

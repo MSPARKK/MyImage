@@ -15,14 +15,19 @@ data class KakaoImage(
     @SerializedName("datetime")
     val dateTime: String? = null,
 
-    var isMyImage: Boolean = false
+    var isMyImage: Boolean = false,
+
+    // @@ 잠깐! todo : test 로직 삭제
+    @SerializedName("url")
+    val url: String? = null,
 ) {
 
     // 잠깐! todo : 모든 버전에 맞는 시간 포맷 넣기
     @RequiresApi(Build.VERSION_CODES.O)
     fun getTimeStamp(): String {
         val inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
-        val outputFormat = "yy-MM-dd HH:mm:ss"
+//        val outputFormat = "yy-MM-dd HH:mm:ss"
+        val outputFormat = "MM/dd HH:mm"
 
         val formatterInput = DateTimeFormatter.ofPattern(inputFormat)
         val formatterOutput = DateTimeFormatter.ofPattern(outputFormat)
