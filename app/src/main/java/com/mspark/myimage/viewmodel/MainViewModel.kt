@@ -23,9 +23,10 @@ class MainViewModel(
 
     private val _imageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
     val imageList: LiveData<List<KakaoImage>> = _imageList
-    private val totalImageList = ArrayList<KakaoImage>()
 
+    private val totalImageList = ArrayList<KakaoImage>()
     private val temporaryImageList = ArrayList<KakaoImage>()
+
     private val imageQueue: Queue<KakaoImage> = LinkedList()
     private val videoQueue: Queue<KakaoImage> = LinkedList()
 
@@ -34,14 +35,16 @@ class MainViewModel(
     private var imagePage = 1 // 1 ~ 50
     private var videoPage = 1 // 1 ~ 15
 
+    private var query = TEST_QUERY
+
 
     fun searchImage() {
         viewModelScope.launch {
             val deferredResponseImage = async {
-                repository.searchImage(query = TEST_QUERY, sort = SORT_RECENCY, page = imagePage)
+                repository.searchImage(query = query, sort = SORT_RECENCY, page = imagePage)
             }
             val deferredResponseVideo = async {
-                repository.searchVideo(query = TEST_QUERY, sort = SORT_RECENCY, page = imagePage)
+                repository.searchVideo(query = query, sort = SORT_RECENCY, page = imagePage)
             }
 
 
@@ -108,20 +111,31 @@ class MainViewModel(
         }
     }
 
-    fun searchVideo() {
-//        viewModelScope.launch {
-//            val response = repository.searchVideo(TEST_QUERY,"accuracy", videoPage)
-//            if (response.isSuccessful) {
-//                Log.d("@@ MainViewModel", "searchImage: ${response.body()?.documents}")
-//                response.body()?.documents?.let {
-////                    _imageList.postValue(it)
-//                    totalImageList.addAll(it)
-//                    _imageList.postValue(totalImageList)
-//                }
-//            } else {
-//                Log.d("@@ MainViewModel", "searchImage: ${response.errorBody()}")
-//            }
-//        }
+    fun searchFaker() {
+        query= "페이커"
+        searchNewQuery()
+    }
+
+    fun searchPuppy() {
+        query = "강아지"
+        searchNewQuery()
+    }
+
+    private fun searchNewQuery() {
+        isLoading = true
+
+        _imageList.postValue(emptyList())
+
+        totalImageList.clear()
+        temporaryImageList.clear()
+
+        imageQueue.clear()
+        videoQueue.clear()
+
+        imagePage = 1
+        videoPage = 1
+
+        searchImage()
     }
 
     fun getMoreImage() {
@@ -131,9 +145,7 @@ class MainViewModel(
         imagePage++
         videoPage++
 
-
         searchImage()
-
     }
 
 }
