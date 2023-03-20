@@ -14,25 +14,54 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
+        <View
+            android:id="@+id/searchTopView"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            app:layout_constraintTop_toTopOf="parent"/>
+
+
         <EditText
             android:id="@+id/searchEdit"
-            android:layout_width="match_parent"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:lines="1"
             android:hint="@string/search_hint"
             android:inputType="text"
+            android:padding="10dp"
+            android:background="@color/transparent"
             android:imeOptions="actionSearch"
             app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintEnd_toStartOf="@id/searchBtn"
+            app:layout_constraintTop_toBottomOf="@id/searchTopView" />
+
+        <ImageButton
+            android:id="@+id/searchBtn"
+            android:layout_width="0dp"
+            android:layout_height="0dp"
+            android:background="@color/transparent"
+            android:src="@drawable/icon_search"
+            app:layout_constraintDimensionRatio="1:1"
             app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toTopOf="@id/searchEdit"
+            app:layout_constraintBottom_toBottomOf="@id/searchEdit"/>
+        <View
+            android:id="@+id/searchBottomView"
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/gray"
+            app:layout_constraintTop_toBottomOf="@id/searchEdit"/>
 
         <androidx.recyclerview.widget.RecyclerView
             android:id="@+id/searchRecyclerView"
             android:layout_width="match_parent"
             android:layout_height="0dp"
             app:spanCount="2"
+            android:clipToPadding="false"
+            android:padding="6dp"
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
-            app:layout_constraintTop_toBottomOf="@id/searchEdit"
+            app:layout_constraintTop_toBottomOf="@id/searchBottomView"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
 
