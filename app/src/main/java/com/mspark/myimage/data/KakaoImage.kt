@@ -1,12 +1,12 @@
 package com.mspark.myimage.data
 
 import android.os.Build
-import androidx.annotation.RequiresApi
 import com.google.gson.annotations.SerializedName
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
 import java.time.format.DateTimeFormatter
+import java.time.format.DateTimeParseException
 import java.util.*
 
 data class KakaoImage(
@@ -26,15 +26,20 @@ data class KakaoImage(
 
     fun getTimeStamp(): String {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            val inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
-            val outputFormat = "yy.MM.dd HH:mm"
+            return try {
+                val inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
+                val outputFormat = "yy.MM.dd HH:mm"
 
-            val formatterInput = DateTimeFormatter.ofPattern(inputFormat)
-            val formatterOutput = DateTimeFormatter.ofPattern(outputFormat)
+                val formatterInput = DateTimeFormatter.ofPattern(inputFormat)
+                val formatterOutput = DateTimeFormatter.ofPattern(outputFormat)
 
-            val dateTime = LocalDateTime.parse(dateTime, formatterInput)
+                val dateTime = LocalDateTime.parse(dateTime, formatterInput)
 
-            return dateTime.format(formatterOutput)
+                return dateTime.format(formatterOutput)
+            } catch (e: DateTimeParseException) {
+                e.printStackTrace()
+                ""
+            }
         }
 
         val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())

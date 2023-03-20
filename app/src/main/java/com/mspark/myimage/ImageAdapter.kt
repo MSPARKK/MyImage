@@ -1,10 +1,8 @@
 package com.mspark.myimage
 
 import android.content.Context
-import android.os.Build
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
@@ -51,19 +49,10 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
         private val onClickLike: ((Int) -> Unit)? = null
     ): RecyclerView.ViewHolder(binding.root) {
         fun bind(kakaoImage: KakaoImage) {
+            binding.model = kakaoImage
+
             binding.itemLikeImg.setOnClickListener {
                 onClickLike?.invoke(layoutPosition)
-            }
-
-            Glide.with(context)
-                .load(kakaoImage.thumbnailUrl)
-                .diskCacheStrategy(DiskCacheStrategy.ALL)
-                .into(binding.itemImage)
-
-            if (kakaoImage.isMyImage) {
-                binding.itemLikeImg.setImageResource(R.drawable.icon_favorite)
-            } else {
-                binding.itemLikeImg.setImageResource(R.drawable.icon_favorite_border)
             }
 
             setItemTimeStamp(kakaoImage)
@@ -71,8 +60,6 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
 
         private fun setItemTimeStamp(kakaoImage: KakaoImage) {
             if (type == MY_IMAGE) return
-
-            binding.itemTimeStamp.text = kakaoImage.getTimeStamp()
 
             // @@ 잠깐! todo : test 로직 삭제
             if (kakaoImage.url != null) {
