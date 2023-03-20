@@ -12,8 +12,8 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import androidx.recyclerview.widget.RecyclerView
+import androidx.recyclerview.widget.SimpleItemAnimator
 import com.mspark.myimage.databinding.FragmentSearchBinding
-import com.mspark.myimage.util.Constants.Fragment.SEARCH
 import com.mspark.myimage.viewmodel.MainViewModel
 import com.mspark.myimage.viewmodel.ViewModelFactory
 
@@ -21,7 +21,7 @@ class SearchFragment: Fragment() {
     private lateinit var binding: FragmentSearchBinding
 
     private val imageAdapter by lazy {
-        ImageAdapter(SEARCH)
+        ImageAdapter()
     }
 
     private val viewModel by lazy {
@@ -50,6 +50,7 @@ class SearchFragment: Fragment() {
 
     private fun setImageAdapter() {
         binding.searchRecyclerView.itemAnimator = null
+
         binding.searchRecyclerView.adapter = imageAdapter
 
         imageAdapter.apply {

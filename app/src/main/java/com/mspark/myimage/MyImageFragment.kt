@@ -9,7 +9,6 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.lifecycle.lifecycleScope
 import com.mspark.myimage.databinding.FragmentMyImageBinding
-import com.mspark.myimage.util.Constants.Fragment.MY_IMAGE
 import com.mspark.myimage.viewmodel.MainViewModel
 import com.mspark.myimage.viewmodel.ViewModelFactory
 
@@ -17,7 +16,7 @@ class MyImageFragment: Fragment() {
     private lateinit var binding: FragmentMyImageBinding
 
     private val imageAdapter by lazy {
-        ImageAdapter(MY_IMAGE)
+        ImageAdapter()
     }
 
     private val viewModel by lazy {
@@ -45,7 +44,7 @@ class MyImageFragment: Fragment() {
     }
 
     private fun setImageAdapter() {
-        binding.myImageRecyclerView.itemAnimator = null
+//        binding.myImageRecyclerView.itemAnimator = null
         binding.myImageRecyclerView.adapter = imageAdapter
 
         imageAdapter.apply {

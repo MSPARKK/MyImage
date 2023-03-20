@@ -4,21 +4,18 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.databinding.ItemImageBinding
-import com.mspark.myimage.util.Constants.Fragment.MY_IMAGE
-import com.mspark.myimage.util.Constants.Fragment.SEARCH
 
-class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPARATOR) {
+class ImageAdapter(): ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPARATOR) {
     var onClickLike: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding, parent.context, type) {
+        return ImageViewHolder(binding, parent.context) {
             onClickLike?.invoke(it)
         }
     }
@@ -45,14 +42,11 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
     class ImageViewHolder(
         private val binding: ItemImageBinding,
         private val context: Context,
-        private val type: String,
         private val onClickLike: ((Int) -> Unit)? = null
     ): RecyclerView.ViewHolder(binding.root), CustomClickListener {
         fun bind(kakaoImage: KakaoImage) {
             binding.model = kakaoImage
             binding.likeClickListener = this
-
-            setItemTimeStamp(kakaoImage)
         }
 
         override fun likeClicked() {
@@ -61,17 +55,12 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
 
         // @@ 잠깐! todo : test 로직 삭제
         private fun setItemTimeStamp(kakaoImage: KakaoImage) {
-            if (type == MY_IMAGE) return
 
             if (kakaoImage.url != null) {
                 binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.purple_500))
             } else {
                 binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.black))
             }
-        }
-
-        init {
-            binding.itemTimeStamp.isVisible = type == SEARCH
         }
     }
 }

@@ -1,12 +1,6 @@
 package com.mspark.myimage.util
 
 class Constants {
-
-    object Fragment {
-        const val MY_IMAGE = "myImage"
-        const val SEARCH = "search"
-    }
-
     object Shared {
         const val SAVE_NAME = "my_image_share"
 

@@ -1,5 +1,6 @@
 package com.mspark.myimage.util
 
+import android.view.View
 import android.widget.ImageView
 import androidx.databinding.BindingAdapter
 import com.bumptech.glide.Glide
@@ -13,5 +14,11 @@ object BindingAdapters {
             .load(url?: "")
             .placeholder(R.color.gray)
             .into(imageView)
+    }
+
+    @JvmStatic
+    @BindingAdapter("toVisibility")
+    fun toVisibility(view: View, visibility: Boolean) {
+        view.visibility = if(visibility) View.VISIBLE else View.GONE
     }
 }
