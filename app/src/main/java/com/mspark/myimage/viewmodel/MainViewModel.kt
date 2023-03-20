@@ -88,7 +88,7 @@ class MainViewModel(
                 val video = videoQueue.peek()
 
                 if (image != null && video != null) {
-                    if (image.getTimeStamp() > video.getTimeStamp()) {
+                    if (image.dateTime > video.dateTime) {
                         imageQueue.poll()?.let {
                             temporaryImageList.add(it)
                         }

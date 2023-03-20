@@ -14,7 +14,7 @@ data class KakaoImage(
     val thumbnailUrl: String? = null,
 
     @SerializedName("datetime")
-    val dateTime: String? = null,
+    val dateTime: String = "",
 
     var isMyImage: Boolean = false,
 
@@ -25,8 +25,6 @@ data class KakaoImage(
 
 
     fun getTimeStamp(): String {
-        if (dateTime == null) return ""
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             val inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"
             val outputFormat = "yy.MM.dd HH:mm"
