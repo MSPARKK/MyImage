@@ -83,7 +83,6 @@ class MainViewModel(
 
             Log.d("@@ MainViewModel", "sort Test| before / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
 
-            @RequiresApi(Build.VERSION_CODES.O)
             while (imageQueue.isNotEmpty() && videoQueue.isNotEmpty()) {
                 val image = imageQueue.peek()
                 val video = videoQueue.peek()

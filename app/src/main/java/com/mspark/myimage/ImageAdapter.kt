@@ -72,7 +72,6 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
         private fun setItemTimeStamp(kakaoImage: KakaoImage) {
             if (type == MY_IMAGE) return
 
-            @RequiresApi(Build.VERSION_CODES.O)
             binding.itemTimeStamp.text = kakaoImage.getTimeStamp()
 
             // @@ 잠깐! todo : test 로직 삭제
