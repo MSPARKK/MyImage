@@ -8,8 +8,6 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.bumptech.glide.Glide
-import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.databinding.ItemImageBinding
 import com.mspark.myimage.util.Constants.Fragment.MY_IMAGE
@@ -32,6 +30,8 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
         super.submitList(list?.let { ArrayList(it) })
     }
 
+
+
     companion object {
         val COMPARATOR = object : DiffUtil.ItemCallback<KakaoImage>() {
             override fun areContentsTheSame(oldItem: KakaoImage, newItem: KakaoImage): Boolean =
@@ -47,21 +47,22 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
         private val context: Context,
         private val type: String,
         private val onClickLike: ((Int) -> Unit)? = null
-    ): RecyclerView.ViewHolder(binding.root) {
+    ): RecyclerView.ViewHolder(binding.root), CustomClickListener {
         fun bind(kakaoImage: KakaoImage) {
             binding.model = kakaoImage
-
-            binding.itemLikeImg.setOnClickListener {
-                onClickLike?.invoke(layoutPosition)
-            }
+            binding.likeClickListener = this
 
             setItemTimeStamp(kakaoImage)
         }
 
+        override fun likeClicked() {
+            onClickLike?.invoke(layoutPosition)
+        }
+
+        // @@ 잠깐! todo : test 로직 삭제
         private fun setItemTimeStamp(kakaoImage: KakaoImage) {
             if (type == MY_IMAGE) return
 
-            // @@ 잠깐! todo : test 로직 삭제
             if (kakaoImage.url != null) {
                 binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.purple_500))
             } else {
@@ -73,6 +74,9 @@ class ImageAdapter(private val type: String): ListAdapter<KakaoImage, ImageAdapt
             binding.itemTimeStamp.isVisible = type == SEARCH
         }
     }
+}
 
 
+interface CustomClickListener {
+    fun likeClicked()
 }
