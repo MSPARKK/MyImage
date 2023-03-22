@@ -23,7 +23,6 @@ class MainViewModel(
     val imageList: LiveData<List<KakaoImage>> = _imageList
 
     private val totalImageList = ArrayList<KakaoImage>()
-    private val temporaryImageList = ArrayList<KakaoImage>()
 
     private val imageQueue: Queue<KakaoImage> = LinkedList()
     private val videoQueue: Queue<KakaoImage> = LinkedList()
@@ -50,6 +49,7 @@ class MainViewModel(
                 repository.searchVideo(query = query, page = imagePage)
             }
 
+            val temporaryImageList = ArrayList<KakaoImage>()
 
             // 앞으로 불러올 이미지의 날짜도 고려해서 정렬
             val (responseImage, responseVideo) = awaitAll(deferredResponseImage, deferredResponseVideo)
@@ -103,26 +103,29 @@ class MainViewModel(
             Log.d("@@ MainViewModel", "sort Test| after / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
             Log.d("@@ MainViewModel", "sort Test| after / temporaryImageList / ${temporaryImageList.size} / $temporaryImageList")
 
-            // 이미 좋아요 한 이미지는 isMyImage = true 로 변경
-            val myImageListString = repository.getMyImageListString()
-
-            temporaryImageList.forEach {
-                it.thumbnailUrl?.let { thumbnailUrl ->
-                    Log.d("@@ MainViewModel", "sort Test3| after / ${myImageListString.contains(thumbnailUrl)}")
-
-                    if (myImageListString.contains(thumbnailUrl)) {
-                        it.isMyImage = true
-                    }
-                }
-            }
+            val resultImageList = updateImageListWithMyImages(temporaryImageList)
 
 
-            totalImageList.addAll(temporaryImageList)
-            temporaryImageList.clear()
+            totalImageList.addAll(resultImageList)
             _imageList.postValue(totalImageList)
 
             isLoading = false
         }
+    }
+
+    private fun updateImageListWithMyImages(imageList: ArrayList<KakaoImage>): ArrayList<KakaoImage> {
+        val myImageListString = repository.getMyImageListString()
+        val updatedImageList = ArrayList<KakaoImage>(imageList.size)
+
+        imageList.forEach { image ->
+            if (image.thumbnailUrl != null && myImageListString.contains(image.thumbnailUrl)) {
+                updatedImageList.add(image.copy(isMyImage = true))
+            } else {
+                updatedImageList.add(image)
+            }
+        }
+
+        return updatedImageList
     }
 
     fun searchNewQuery(query: String) {
@@ -133,7 +136,6 @@ class MainViewModel(
         _imageList.postValue(emptyList())
 
         totalImageList.clear()
-        temporaryImageList.clear()
 
         imageQueue.clear()
         videoQueue.clear()
