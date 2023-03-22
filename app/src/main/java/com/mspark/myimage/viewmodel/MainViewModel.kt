@@ -37,6 +37,8 @@ class MainViewModel(
 
     private val _myImageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
     val myImageList: LiveData<List<KakaoImage>> = _myImageList
+    private val _isMyImageListEmpty: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val isMyImageEmpty: LiveData<Boolean> = _isMyImageListEmpty
 
 
     private fun searchImage() {
@@ -189,8 +191,10 @@ class MainViewModel(
                 myImageList.add(kakaoImage)
             }
             _myImageList.postValue(myImageList)
+            _isMyImageListEmpty.postValue(false)
         } else {
             _myImageList.postValue(emptyList())
+            _isMyImageListEmpty.postValue(true)
         }
     }
 

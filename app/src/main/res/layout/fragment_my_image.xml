@@ -23,6 +23,18 @@
             app:layoutManager="androidx.recyclerview.widget.GridLayoutManager"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            toVisibility="@{view.isMyImageEmpty()}"
+            android:textColor="@color/black"
+            android:text="@string/empty_my_image"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>

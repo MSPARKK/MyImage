@@ -10,7 +10,7 @@ import androidx.recyclerview.widget.RecyclerView
 import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.databinding.ItemImageBinding
 
-class ImageAdapter(): ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPARATOR) {
+class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPARATOR) {
     var onClickLike: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
@@ -27,15 +27,14 @@ class ImageAdapter(): ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMP
         super.submitList(list?.let { ArrayList(it) })
     }
 
-
-
     companion object {
         val COMPARATOR = object : DiffUtil.ItemCallback<KakaoImage>() {
             override fun areContentsTheSame(oldItem: KakaoImage, newItem: KakaoImage): Boolean =
-                oldItem == newItem
+                oldItem.isMyImage == newItem.isMyImage
+                        && oldItem.dateTime == newItem.dateTime
 
             override fun areItemsTheSame(oldItem: KakaoImage, newItem: KakaoImage): Boolean =
-                oldItem == newItem
+                oldItem.thumbnailUrl == newItem.thumbnailUrl
         }
     }
 
@@ -52,6 +51,7 @@ class ImageAdapter(): ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMP
         override fun likeClicked() {
             onClickLike?.invoke(layoutPosition)
         }
+
 
         // @@ 잠깐! todo : test 로직 삭제
         private fun setItemTimeStamp(kakaoImage: KakaoImage) {
