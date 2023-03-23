@@ -1,7 +1,5 @@
 package com.mspark.myimage.util
 
-import android.os.Build
-import androidx.annotation.RequiresApi
 import java.text.ParseException
 import java.text.SimpleDateFormat
 import java.time.LocalDateTime
@@ -10,16 +8,14 @@ import java.time.format.DateTimeParseException
 import java.util.*
 
 object TimeStampUtil {
-    @JvmStatic
-    fun getTimeStamp(dateTime: String): String {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+    fun getTimeStamp(dateTime: String, buildVersionProvider: BuildVersionProvider): String {
+        if (buildVersionProvider.isOreoAndAbove()) {
             return getTimeStampOreoAndAbove(dateTime)
         }
 
         return getTimeStampUnderOreo(dateTime)
     }
 
-    @RequiresApi(Build.VERSION_CODES.O)
     private fun getTimeStampOreoAndAbove(dateTime: String): String {
         return try {
             val inputFormat = "yyyy-MM-dd'T'HH:mm:ss.SSSXXX"

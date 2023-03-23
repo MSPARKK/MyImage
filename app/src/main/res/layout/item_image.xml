@@ -12,8 +12,6 @@
         <variable
             name="likeClickListener"
             type="com.mspark.myimage.CustomClickListener"/>
-
-        <import type="com.mspark.myimage.util.TimeStampUtil"/>
     </data>
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -39,9 +37,9 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             tools:text="2020-12-12 12:12:12"
-            android:text="@{TimeStampUtil.getTimeStamp(model.dateTime)}"
+            android:text="@{model.getTimeStamp()}"
             android:textSize="12sp"
-            toVisibility="@{!(TimeStampUtil.getTimeStamp(model.dateTime).isEmpty())}"
+            toVisibility="@{!(model.getTimeStamp().isEmpty())}"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@id/itemImage"
