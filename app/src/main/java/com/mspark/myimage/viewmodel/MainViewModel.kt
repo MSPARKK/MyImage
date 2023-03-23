@@ -30,8 +30,7 @@ class MainViewModel(
 
     private var isLoading = false
 
-    private var imagePage = 1 // 1 ~ 50
-    private var videoPage = 1 // 1 ~ 15
+    private var page = 1 // 1 ~ 50
 
     private var query = ""
 
@@ -44,10 +43,10 @@ class MainViewModel(
     private fun searchImage() {
         viewModelScope.launch(exceptionHandler) {
             val deferredResponseImage = async {
-                repository.searchImage(query = query, page = imagePage)
+                repository.searchImage(query = query, page = page)
             }
             val deferredResponseVideo = async {
-                repository.searchVideo(query = query, page = imagePage)
+                repository.searchVideo(query = query, page = page)
             }
 
             val temporaryImageList = ArrayList<KakaoImage>()
@@ -141,8 +140,7 @@ class MainViewModel(
         imageQueue.clear()
         videoQueue.clear()
 
-        imagePage = 1
-        videoPage = 1
+        page = 1
 
         searchImage()
     }
@@ -153,8 +151,7 @@ class MainViewModel(
         if (isLoading) return
         isLoading = true
 
-        imagePage++
-        videoPage++
+        page++
 
         searchImage()
     }
