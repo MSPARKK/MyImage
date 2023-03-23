@@ -7,6 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.repository.MainRepository
+import com.mspark.myimage.util.Constants.KakaoApi.PATH_IMAGE
+import com.mspark.myimage.util.Constants.KakaoApi.PATH_VIDEO
 import com.mspark.myimage.util.Constants.Shared.SEPARATOR
 import com.mspark.myimage.util.SingleLiveEvent
 import kotlinx.coroutines.CoroutineExceptionHandler
@@ -30,7 +32,7 @@ class MainViewModel(
 
     private var isLoading = false
 
-    private var page = 1 // 1 ~ 50
+    private var page = 1
 
     private var query = ""
 
@@ -43,10 +45,10 @@ class MainViewModel(
     private fun searchImage() {
         viewModelScope.launch(exceptionHandler) {
             val deferredResponseImage = async {
-                repository.searchImage(query = query, page = page)
+                repository.searchImage(path = PATH_IMAGE, query = query, page = page)
             }
             val deferredResponseVideo = async {
-                repository.searchVideo(query = query, page = page)
+                repository.searchImage(path = PATH_VIDEO, query = query, page = page)
             }
 
             val temporaryImageList = ArrayList<KakaoImage>()
