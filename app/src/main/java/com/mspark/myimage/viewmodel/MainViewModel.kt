@@ -9,6 +9,7 @@ import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.repository.MainRepository
 import com.mspark.myimage.util.Constants.Shared.SEPARATOR
 import com.mspark.myimage.util.SingleLiveEvent
+import kotlinx.coroutines.CoroutineExceptionHandler
 import kotlinx.coroutines.async
 import kotlinx.coroutines.awaitAll
 import kotlinx.coroutines.launch
@@ -41,7 +42,7 @@ class MainViewModel(
 
 
     private fun searchImage() {
-        viewModelScope.launch {
+        viewModelScope.launch(exceptionHandler) {
             val deferredResponseImage = async {
                 repository.searchImage(query = query, page = imagePage)
             }
@@ -223,6 +224,17 @@ class MainViewModel(
                 }
             }
         }
+    }
+
+    private fun onError(message: String) {
+        Log.e("@@ MainViewModel", "onError | message : $message")
+        isLoading = true
+    }
+
+    private val exceptionHandler = CoroutineExceptionHandler { _, throwable ->
+        throwable.stackTrace
+
+        onError("Exception handled: ${throwable.localizedMessage}")
     }
 
 }
