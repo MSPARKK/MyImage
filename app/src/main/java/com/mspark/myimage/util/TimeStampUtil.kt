@@ -35,7 +35,7 @@ object TimeStampUtil {
 
     private fun getTimeStampUnderOreo(dateTime: String): String {
         val isoFormat = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS", Locale.getDefault())
-        val desiredFormat = SimpleDateFormat("MM/dd HH:mm", Locale.getDefault())
+        val desiredFormat = SimpleDateFormat("yy.MM.dd HH:mm", Locale.getDefault())
 
         return try {
             val date: Date = (isoFormat.parse(dateTime))?: return ""
