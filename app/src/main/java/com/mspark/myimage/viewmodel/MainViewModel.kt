@@ -12,6 +12,7 @@ import com.mspark.myimage.util.Constants.KakaoApi.PATH_VIDEO
 import com.mspark.myimage.util.Constants.Shared.SEPARATOR
 import com.mspark.myimage.util.SingleLiveEvent
 import kotlinx.coroutines.*
+import org.jetbrains.annotations.TestOnly
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,7 +31,6 @@ class MainViewModel(
     private var isLoading = false
 
     private var page = 1
-
     private var query = ""
 
     private val _myImageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
@@ -40,8 +40,8 @@ class MainViewModel(
 
 
     private fun searchImage() {
-        viewModelScope.launch(exceptionHandler) {
 
+        viewModelScope.launch(exceptionHandler) {
             val deferredDataFromImageApi = async {
                 repository.searchImage(path = PATH_IMAGE, query = query, page = page)
             }
@@ -134,8 +134,6 @@ class MainViewModel(
         this.query = query
 
         isLoading = true
-
-//        _imageList.postValue(emptyList())
 
         totalImageList.clear()
 
@@ -234,6 +232,22 @@ class MainViewModel(
         throwable.stackTrace
 
         onError("Exception handled: ${throwable.localizedMessage}")
+    }
+
+    @TestOnly
+    fun setTestDataForGetMoreImage(
+        isLoading: Boolean,
+        query: String,
+        page: Int,
+        imageQueueData: List<KakaoImage>,
+        videoQueueData: List<KakaoImage>
+    ) {
+        this.isLoading = isLoading
+        this.query = query
+        this.page = page
+
+        imageQueue.addAll(imageQueueData)
+        videoQueue.addAll(videoQueueData)
     }
 
 }
