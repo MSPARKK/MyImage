@@ -40,11 +40,7 @@ class MainViewModel(
 
 
     private fun searchImage() {
-
-
-//        viewModelScope.launch(exceptionHandler) {
-        // todo: 코루틴 스코프로 해도 문제 없을까? - 점심먹고 테스트 해보기
-        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+        viewModelScope.launch(exceptionHandler) {
 
             val deferredDataFromImageApi = async {
                 repository.searchImage(path = PATH_IMAGE, query = query, page = page)
@@ -58,22 +54,6 @@ class MainViewModel(
             processDataFromApi(dataFromImageApi, dataFromVideoApi)
         }
     }
-
-//    private fun searchImage() {
-//        viewModelScope.launch(exceptionHandler) {
-//
-//            val deferredDataFromImageApi = async {
-//                repository.searchImage(path = PATH_IMAGE, query = query, page = page)
-//            }
-//            val deferredDataFromVideoApi = async {
-//                repository.searchImage(path = PATH_VIDEO, query = query, page = page)
-//            }
-//
-//            val (dataFromImageApi, dataFromVideoApi) = awaitAll(deferredDataFromImageApi, deferredDataFromVideoApi)
-//
-//            processDataFromApi(dataFromImageApi, dataFromVideoApi)
-//        }
-//    }
 
     private fun processDataFromApi(dataFromImageApi: MutableList<KakaoImage>, dataFromVideoApi: MutableList<KakaoImage>) {
         val temporaryImageList = sortImageListByNewest(dataFromImageApi, dataFromVideoApi)
