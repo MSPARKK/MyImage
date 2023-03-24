@@ -44,75 +44,76 @@ class MainViewModel(
 
     private fun searchImage() {
         viewModelScope.launch(exceptionHandler) {
-            val deferredResponseImage = async {
+            val deferredDataFromImageApi = async {
                 repository.searchImage(path = PATH_IMAGE, query = query, page = page)
             }
-            val deferredResponseVideo = async {
+            val deferredDataFromVideoApi = async {
                 repository.searchImage(path = PATH_VIDEO, query = query, page = page)
             }
 
-            val temporaryImageList = ArrayList<KakaoImage>()
+            val (dataFromImageApi, dataFromVideoApi) = awaitAll(deferredDataFromImageApi, deferredDataFromVideoApi)
 
-            // 앞으로 불러올 이미지의 날짜도 고려해서 정렬
-            val (responseImage, responseVideo) = awaitAll(deferredResponseImage, deferredResponseVideo)
+            processDataFromApi(dataFromImageApi, dataFromVideoApi)
+        }
+    }
 
-            Log.d("@@ MainViewModel", "sort Test2| after / responseImage.isEnd : ${ responseImage.body()?.metaData?.isEnd} / responseVideo.isEnd : ${responseVideo.body()?.metaData?.isEnd}")
-            Log.d("@@ MainViewModel", "sort Test2| after / responseImage.isSuccessful : ${responseImage.isSuccessful} / responseVideo.isSuccessful : ${responseVideo.isSuccessful}")
+    private fun processDataFromApi(dataFromImageApi: MutableList<KakaoImage>, dataFromVideoApi: MutableList<KakaoImage>) {
+        val temporaryImageList = sortImageListByNewest(dataFromImageApi, dataFromVideoApi)
 
-            if (responseImage.isSuccessful) {
-                val imageList = responseImage.body()?.documents
-                if (imageList != null) {
-                    imageQueue.addAll(imageList)
-                }
-            } else {
-                if (imageQueue.isEmpty()) {
-                    temporaryImageList.addAll(videoQueue)
-                    videoQueue.clear()
-                }
+        Log.d("@@ MainViewModel", "sort Test| after / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
+        Log.d("@@ MainViewModel", "sort Test| after / temporaryImageList / ${temporaryImageList.size} / $temporaryImageList")
+
+        val resultList = updateImageListWithMyImages(temporaryImageList)
+
+
+        totalImageList.addAll(resultList)
+        _imageList.postValue(totalImageList)
+
+        isLoading = false
+    }
+
+    private fun sortImageListByNewest(dataFromImageApi: MutableList<KakaoImage>, dataFromVideoApi: MutableList<KakaoImage>): ArrayList<KakaoImage> {
+        val temporaryImageList = ArrayList<KakaoImage>()
+
+        if (dataFromImageApi.isNotEmpty()) {
+            imageQueue.addAll(dataFromImageApi)
+        } else {
+            if (imageQueue.isEmpty()) {
+                temporaryImageList.addAll(videoQueue)
+                videoQueue.clear()
             }
+        }
 
-            if (responseVideo.isSuccessful) {
-                val imageList = responseVideo.body()?.documents
-                if (imageList != null) {
-                    videoQueue.addAll(imageList)
-                }
-            } else {
-                if (videoQueue.isEmpty()) {
-                    temporaryImageList.addAll(imageQueue)
-                    imageQueue.clear()
-                }
+        if (dataFromVideoApi.isNotEmpty()) {
+            videoQueue.addAll(dataFromVideoApi)
+        } else {
+            if (videoQueue.isEmpty()) {
+                temporaryImageList.addAll(imageQueue)
+                imageQueue.clear()
             }
+        }
 
-            Log.d("@@ MainViewModel", "sort Test| before / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
 
-            while (imageQueue.isNotEmpty() && videoQueue.isNotEmpty()) {
-                val image = imageQueue.peek()
-                val video = videoQueue.peek()
+        Log.d("@@ MainViewModel", "sort Test| before / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
 
-                if (image != null && video != null) {
-                    if (image.dateTime > video.dateTime) {
-                        imageQueue.poll()?.let {
-                            temporaryImageList.add(it)
-                        }
-                    } else {
-                        videoQueue.poll()?.let {
-                            temporaryImageList.add(it)
-                        }
+        while (imageQueue.isNotEmpty() && videoQueue.isNotEmpty()) {
+            val image = imageQueue.peek()
+            val video = videoQueue.peek()
+
+            if (image != null && video != null) {
+                if (image.dateTime > video.dateTime) {
+                    imageQueue.poll()?.let {
+                        temporaryImageList.add(it)
+                    }
+                } else {
+                    videoQueue.poll()?.let {
+                        temporaryImageList.add(it)
                     }
                 }
             }
-
-            Log.d("@@ MainViewModel", "sort Test| after / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
-            Log.d("@@ MainViewModel", "sort Test| after / temporaryImageList / ${temporaryImageList.size} / $temporaryImageList")
-
-            val resultImageList = updateImageListWithMyImages(temporaryImageList)
-
-
-            totalImageList.addAll(resultImageList)
-            _imageList.postValue(totalImageList)
-
-            isLoading = false
         }
+
+        return temporaryImageList
     }
 
     private fun updateImageListWithMyImages(imageList: ArrayList<KakaoImage>): ArrayList<KakaoImage> {

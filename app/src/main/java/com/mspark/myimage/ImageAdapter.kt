@@ -47,7 +47,7 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
             binding.model = kakaoImage
             binding.likeClickListener = this
 
-//            setItemTimeStamp(kakaoImage)
+            setItemTimeStamp(kakaoImage)
         }
 
         override fun likeClicked() {

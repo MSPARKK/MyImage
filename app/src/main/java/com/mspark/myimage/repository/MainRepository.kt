@@ -6,6 +6,7 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mspark.myimage.api.KakaoOpenApi
 import com.mspark.myimage.data.ImageSearchResponse
+import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.util.Constants.KakaoApi.IMAGE_SIZE
 import com.mspark.myimage.util.Constants.KakaoApi.SORT_RECENCY
 import com.mspark.myimage.util.Constants.Shared.KEY_MY_IMAGE_LIST
@@ -14,7 +15,7 @@ import com.mspark.myimage.util.Constants.Shared.SEPARATOR
 import retrofit2.Response
 
 interface MainRepository {
-    suspend fun searchImage(path: String, query : String, page: Int): Response<ImageSearchResponse>
+    suspend fun searchImage(path: String, query : String, page: Int): MutableList<KakaoImage>
 
     fun updateMyImage(imageUrl: String)
     fun getMyImageListString(): String
@@ -24,8 +25,7 @@ class MainRepositoryImpl(
     private val remoteDataSource: MainRemoteDataSource,
     private val localDataSource: MainLocalDataSource
 ): MainRepository {
-
-    override suspend fun searchImage(path: String, query: String, page: Int): Response<ImageSearchResponse> {
+    override suspend fun searchImage(path: String, query: String, page: Int): MutableList<KakaoImage> {
         return remoteDataSource.searchImage(path, query, page)
     }
 
@@ -54,21 +54,28 @@ class MainRepositoryImpl(
 }
 
 interface MainRemoteDataSource {
-    suspend fun searchImage(path: String, query : String, page: Int): Response<ImageSearchResponse>
+    suspend fun searchImage(path: String, query : String, page: Int): MutableList<KakaoImage>
 }
 
 class MainRemoteDataSourceImpl(
     private val kakaoOpenApi: KakaoOpenApi
 ): MainRemoteDataSource {
 
-    override suspend fun searchImage(path: String, query: String, page: Int): Response<ImageSearchResponse> {
-        return kakaoOpenApi.searchImage(
+    override suspend fun searchImage(path: String, query: String, page: Int): MutableList<KakaoImage> {
+        kakaoOpenApi.searchImage(
             path = path,
             query = query,
             sort = SORT_RECENCY,
             page = page,
             size = IMAGE_SIZE
-        )
+        ).let {
+            if (it.isSuccessful) {
+                return it.body()?.documents ?: mutableListOf()
+            } else {
+                Log.e("MainRemoteDataSourceImpl", "searchImage() error : ${it.errorBody()}")
+                return mutableListOf()
+            }
+        }
     }
 }
 
