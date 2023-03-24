@@ -62,8 +62,9 @@ class MainViewModelTest {
 //    }
 
     @Test
-    fun `searchNewQuery should update query and reset variables`() {
+    fun searchNewQueryTest_when_dataFromVideoApi_has_oldestData() {
         runBlocking {
+            // Given
             val dataFromImageApi = mutableListOf(
                 KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
                 KakaoImage("image-B","2023-03-20T21:20:00.000+09:00"),
@@ -81,16 +82,65 @@ class MainViewModelTest {
                 KakaoImage("image-B","2023-03-20T21:20:00.000+09:00", true),
             )
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE,"test", 1))
+            val query = "test"
+            val page = 1
+
+            val myImageListString = "image-B|video-A"
+
+            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page))
                 .thenReturn(dataFromImageApi)
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_VIDEO,"test", 1))
+            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_VIDEO, query, page))
                 .thenReturn(dataFromVideoApi)
 
-            `when`(mainRepository.getMyImageListString()).thenReturn("image-B|video-A")
+            `when`(mainRepository.getMyImageListString()).thenReturn(myImageListString)
 
+            // When
+            mainViewModel.searchNewQuery(query)
+
+            // Then
+            assertEquals(resultFromImageApi, mainViewModel.imageList.getOrAwaitValue())
+
+        }
+    }
+
+
+
+    @Test
+    fun searchNewQueryTest_when_dataFromImageApi_has_oldestData() {
+        runBlocking {
             // Given
+            val dataFromImageApi = mutableListOf(
+                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
+                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00"),
+                KakaoImage("image-C","2023-03-20T21:16:00.000+09:00"),
+            )
+
+            val dataFromVideoApi = mutableListOf(
+                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00"),
+                KakaoImage("video-B","2023-03-20T21:19:00.000+09:00"),
+            )
+
+
+            val resultFromImageApi = mutableListOf(
+                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
+                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00", true),
+                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00", true),
+                KakaoImage("video-B","2023-03-20T21:19:00.000+09:00"),
+            )
+
             val query = "test"
+            val page = 1
+
+            val myImageListString = "image-B|video-A"
+
+            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page))
+                .thenReturn(dataFromImageApi)
+
+            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_VIDEO, query, page))
+                .thenReturn(dataFromVideoApi)
+
+            `when`(mainRepository.getMyImageListString()).thenReturn(myImageListString)
 
             // When
             mainViewModel.searchNewQuery(query)
