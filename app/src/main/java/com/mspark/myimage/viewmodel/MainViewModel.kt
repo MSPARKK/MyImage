@@ -11,10 +11,7 @@ import com.mspark.myimage.util.Constants.KakaoApi.PATH_IMAGE
 import com.mspark.myimage.util.Constants.KakaoApi.PATH_VIDEO
 import com.mspark.myimage.util.Constants.Shared.SEPARATOR
 import com.mspark.myimage.util.SingleLiveEvent
-import kotlinx.coroutines.CoroutineExceptionHandler
-import kotlinx.coroutines.async
-import kotlinx.coroutines.awaitAll
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,7 +40,12 @@ class MainViewModel(
 
 
     private fun searchImage() {
-        viewModelScope.launch(exceptionHandler) {
+
+
+//        viewModelScope.launch(exceptionHandler) {
+        // todo: 코루틴 스코프로 해도 문제 없을까? - 점심먹고 테스트 해보기
+        CoroutineScope(Dispatchers.IO + exceptionHandler).launch {
+
             val deferredDataFromImageApi = async {
                 repository.searchImage(path = PATH_IMAGE, query = query, page = page)
             }
@@ -56,6 +58,22 @@ class MainViewModel(
             processDataFromApi(dataFromImageApi, dataFromVideoApi)
         }
     }
+
+//    private fun searchImage() {
+//        viewModelScope.launch(exceptionHandler) {
+//
+//            val deferredDataFromImageApi = async {
+//                repository.searchImage(path = PATH_IMAGE, query = query, page = page)
+//            }
+//            val deferredDataFromVideoApi = async {
+//                repository.searchImage(path = PATH_VIDEO, query = query, page = page)
+//            }
+//
+//            val (dataFromImageApi, dataFromVideoApi) = awaitAll(deferredDataFromImageApi, deferredDataFromVideoApi)
+//
+//            processDataFromApi(dataFromImageApi, dataFromVideoApi)
+//        }
+//    }
 
     private fun processDataFromApi(dataFromImageApi: MutableList<KakaoImage>, dataFromVideoApi: MutableList<KakaoImage>) {
         val temporaryImageList = sortImageListByNewest(dataFromImageApi, dataFromVideoApi)
@@ -72,6 +90,7 @@ class MainViewModel(
         isLoading = false
     }
 
+    // 잠깐! todo : 이거에 대한 설명을 주석으로 넣어보자
     private fun sortImageListByNewest(dataFromImageApi: MutableList<KakaoImage>, dataFromVideoApi: MutableList<KakaoImage>): ArrayList<KakaoImage> {
         val temporaryImageList = ArrayList<KakaoImage>()
 
@@ -136,7 +155,7 @@ class MainViewModel(
 
         isLoading = true
 
-        _imageList.postValue(emptyList())
+//        _imageList.postValue(emptyList())
 
         totalImageList.clear()
 
