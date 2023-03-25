@@ -1,7 +1,6 @@
 package com.mspark.myimage
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import androidx.lifecycle.LiveData
 import com.mspark.myimage.data.KakaoImage
 import com.mspark.myimage.repository.MainLocalDataSource
 import com.mspark.myimage.repository.MainRemoteDataSource
@@ -255,6 +254,7 @@ class MainViewModelTest {
 
         // Then
         assertEquals(mutableListOf<KakaoImage>(), mainViewModel.myImageList.getOrAwaitValue())
+        assertEquals(true, mainViewModel.isMyImageEmpty.getOrAwaitValue())
     }
 
     @Test
@@ -274,6 +274,7 @@ class MainViewModelTest {
 
         // Then
         assertEquals(result, mainViewModel.myImageList.getOrAwaitValue())
+        assertEquals(false, mainViewModel.isMyImageEmpty.getOrAwaitValue())
     }
 
 
