@@ -80,7 +80,7 @@ class MainViewModelTest {
             val query = "test"
             val page = 1
 
-            val myImageListString = "image-B|video-A"
+            val myImageListString = "|image-B|video-A"
 
             `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page))
                 .thenReturn(dataFromImageApi)
@@ -127,7 +127,7 @@ class MainViewModelTest {
             val query = "test"
             val page = 1
 
-            val myImageListString = "image-B|video-A"
+            val myImageListString = "|image-B|video-A"
 
             `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page))
                 .thenReturn(dataFromImageApi)
@@ -175,7 +175,7 @@ class MainViewModelTest {
             val query = "test"
             val page1 = 2
 
-            val myImageListString = "image-B|video-A"
+            val myImageListString = "|image-B|video-A"
 
             `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page1))
                 .thenReturn(dataFromImageApi)
@@ -223,7 +223,7 @@ class MainViewModelTest {
             val query = "test"
             val page1 = 2
 
-            val myImageListString = "image-B|video-A"
+            val myImageListString = "|image-B|video-A"
 
             `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page1))
                 .thenReturn(dataFromImageApi)
@@ -241,6 +241,39 @@ class MainViewModelTest {
             assertEquals(resultFromImageApi, mainViewModel.imageList.getOrAwaitValue())
 
         }
+    }
+
+    @Test
+    fun getMyImage_empty() {
+        // Given
+        val myImageListString = ""
+
+        `when`(mainRepository.getMyImageListString()).thenReturn(myImageListString)
+
+        // When
+        mainViewModel.getMyImage()
+
+        // Then
+        assertEquals(mutableListOf<KakaoImage>(), mainViewModel.myImageList.getOrAwaitValue())
+    }
+
+    @Test
+    fun getMyImage_notEmpty() {
+        // Given
+        val myImageListString = "|image-B|video-A"
+
+        val result = mutableListOf(
+            KakaoImage("image-B","", true),
+            KakaoImage("video-A","", true),
+        )
+
+        `when`(mainRepository.getMyImageListString()).thenReturn(myImageListString)
+
+        // When
+        mainViewModel.getMyImage()
+
+        // Then
+        assertEquals(result, mainViewModel.myImageList.getOrAwaitValue())
     }
 
 
