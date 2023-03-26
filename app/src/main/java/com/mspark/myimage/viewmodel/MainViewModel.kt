@@ -7,8 +7,8 @@ import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
 import com.mspark.myimage.data.ImageData
 import com.mspark.myimage.repository.MainRepository
-import com.mspark.myimage.util.Constants.KakaoApi.PATH_IMAGE
-import com.mspark.myimage.util.Constants.KakaoApi.PATH_VIDEO
+import com.mspark.myimage.util.Constants.Api.PATH_IMAGE
+import com.mspark.myimage.util.Constants.Api.PATH_VIDEO
 import com.mspark.myimage.util.Constants.Shared.SEPARATOR
 import com.mspark.myimage.util.SingleLiveEvent
 import kotlinx.coroutines.*

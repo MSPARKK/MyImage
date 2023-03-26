@@ -6,8 +6,8 @@ import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mspark.myimage.api.KakaoOpenApi
 import com.mspark.myimage.data.ImageData
-import com.mspark.myimage.util.Constants.KakaoApi.IMAGE_SIZE
-import com.mspark.myimage.util.Constants.KakaoApi.SORT_RECENCY
+import com.mspark.myimage.util.Constants.Api.IMAGE_SIZE
+import com.mspark.myimage.util.Constants.Api.SORT_RECENCY
 import com.mspark.myimage.util.Constants.Shared.KEY_MY_IMAGE_LIST
 import com.mspark.myimage.util.Constants.Shared.SAVE_NAME
 import com.mspark.myimage.util.Constants.Shared.SEPARATOR

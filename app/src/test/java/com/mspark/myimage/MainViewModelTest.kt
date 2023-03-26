@@ -81,10 +81,10 @@ class MainViewModelTest {
 
             val myImageListString = "|image-B|video-A"
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page))
+            `when`(mainRepository.searchImage(Constants.Api.PATH_IMAGE, query, page))
                 .thenReturn(dataFromImageApi)
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_VIDEO, query, page))
+            `when`(mainRepository.searchImage(Constants.Api.PATH_VIDEO, query, page))
                 .thenReturn(dataFromVideoApi)
 
             `when`(mainRepository.getMyImageListString()).thenReturn(myImageListString)
@@ -128,10 +128,10 @@ class MainViewModelTest {
 
             val myImageListString = "|image-B|video-A"
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page))
+            `when`(mainRepository.searchImage(Constants.Api.PATH_IMAGE, query, page))
                 .thenReturn(dataFromImageApi)
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_VIDEO, query, page))
+            `when`(mainRepository.searchImage(Constants.Api.PATH_VIDEO, query, page))
                 .thenReturn(dataFromVideoApi)
 
             `when`(mainRepository.getMyImageListString()).thenReturn(myImageListString)
@@ -176,10 +176,10 @@ class MainViewModelTest {
 
             val myImageListString = "|image-B|video-A"
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page1))
+            `when`(mainRepository.searchImage(Constants.Api.PATH_IMAGE, query, page1))
                 .thenReturn(dataFromImageApi)
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_VIDEO, query, page1))
+            `when`(mainRepository.searchImage(Constants.Api.PATH_VIDEO, query, page1))
                 .thenReturn(dataFromVideoApi)
 
             `when`(mainRepository.getMyImageListString()).thenReturn(myImageListString)
@@ -224,10 +224,10 @@ class MainViewModelTest {
 
             val myImageListString = "|image-B|video-A"
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_IMAGE, query, page1))
+            `when`(mainRepository.searchImage(Constants.Api.PATH_IMAGE, query, page1))
                 .thenReturn(dataFromImageApi)
 
-            `when`(mainRepository.searchImage(Constants.KakaoApi.PATH_VIDEO, query, page1))
+            `when`(mainRepository.searchImage(Constants.Api.PATH_VIDEO, query, page1))
                 .thenReturn(dataFromVideoApi)
 
             `when`(mainRepository.getMyImageListString()).thenReturn(myImageListString)

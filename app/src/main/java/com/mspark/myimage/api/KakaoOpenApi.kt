@@ -3,7 +3,7 @@ package com.mspark.myimage.api
 import android.util.Log
 import com.mspark.myimage.BuildConfig
 import com.mspark.myimage.data.ImageSearchResponse
-import com.mspark.myimage.util.Constants.KakaoApi.BASE_URL
+import com.mspark.myimage.util.Constants.Api.BASE_URL
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor

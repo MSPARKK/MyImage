@@ -9,7 +9,7 @@ class Constants {
         const val SEPARATOR = "|"
     }
 
-    object KakaoApi {
+    object Api {
         const val BASE_URL = "https://dapi.kakao.com/"
 
         const val PATH_IMAGE = "image"
