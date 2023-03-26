@@ -5,7 +5,7 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import androidx.recyclerview.widget.RecyclerView.NO_POSITION
-import com.mspark.myimage.data.KakaoImage
+import com.mspark.myimage.data.ImageData
 import com.mspark.myimage.repository.MainRepository
 import com.mspark.myimage.util.Constants.KakaoApi.PATH_IMAGE
 import com.mspark.myimage.util.Constants.KakaoApi.PATH_VIDEO
@@ -20,21 +20,21 @@ class MainViewModel(
     private val repository: MainRepository
 ) : ViewModel() {
 
-    private val _imageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
-    val imageList: LiveData<List<KakaoImage>> = _imageList
+    private val _imageDataList: SingleLiveEvent<List<ImageData>> = SingleLiveEvent()
+    val imageDataList: LiveData<List<ImageData>> = _imageDataList
 
-    private val totalImageList = ArrayList<KakaoImage>()
+    private val totalImageList = ArrayList<ImageData>()
 
-    private val imageQueue: Queue<KakaoImage> = LinkedList()
-    private val videoQueue: Queue<KakaoImage> = LinkedList()
+    private val imageDataQueue: Queue<ImageData> = LinkedList()
+    private val videoQueue: Queue<ImageData> = LinkedList()
 
     private var isLoading = false
 
     private var page = 1
     private var query = ""
 
-    private val _myImageList: SingleLiveEvent<List<KakaoImage>> = SingleLiveEvent()
-    val myImageList: LiveData<List<KakaoImage>> = _myImageList
+    private val _myImageDataList: SingleLiveEvent<List<ImageData>> = SingleLiveEvent()
+    val myImageDataList: LiveData<List<ImageData>> = _myImageDataList
     private val _isMyImageListEmpty: SingleLiveEvent<Boolean> = SingleLiveEvent()
     val isMyImageEmpty: LiveData<Boolean> = _isMyImageListEmpty
 
@@ -55,29 +55,28 @@ class MainViewModel(
         }
     }
 
-    private fun processDataFromApi(dataFromImageApi: MutableList<KakaoImage>, dataFromVideoApi: MutableList<KakaoImage>) {
-        val temporaryImageList = sortImageListByNewest(dataFromImageApi, dataFromVideoApi)
+    private fun processDataFromApi(dataFromImageDataApi: MutableList<ImageData>, dataFromVideoApi: MutableList<ImageData>) {
+        val temporaryImageList = sortImageListByNewest(dataFromImageDataApi, dataFromVideoApi)
 
-        Log.d("@@ MainViewModel", "sort Test| after / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
+        Log.d("@@ MainViewModel", "sort Test| after / imageQueue size: ${imageDataQueue.size}, videoQueue size: ${videoQueue.size}")
         Log.d("@@ MainViewModel", "sort Test| after / temporaryImageList / ${temporaryImageList.size} / $temporaryImageList")
 
         val resultList = updateImageListWithMyImages(temporaryImageList)
 
 
         totalImageList.addAll(resultList)
-        _imageList.postValue(totalImageList)
+        _imageDataList.postValue(totalImageList)
 
         isLoading = false
     }
 
-    // 잠깐! todo : 이거에 대한 설명을 주석으로 넣어보자
-    private fun sortImageListByNewest(dataFromImageApi: MutableList<KakaoImage>, dataFromVideoApi: MutableList<KakaoImage>): ArrayList<KakaoImage> {
-        val temporaryImageList = ArrayList<KakaoImage>()
+    private fun sortImageListByNewest(dataFromImageDataApi: MutableList<ImageData>, dataFromVideoApi: MutableList<ImageData>): ArrayList<ImageData> {
+        val temporaryImageList = ArrayList<ImageData>()
 
-        if (dataFromImageApi.isNotEmpty()) {
-            imageQueue.addAll(dataFromImageApi)
+        if (dataFromImageDataApi.isNotEmpty()) {
+            imageDataQueue.addAll(dataFromImageDataApi)
         } else {
-            if (imageQueue.isEmpty()) {
+            if (imageDataQueue.isEmpty()) {
                 temporaryImageList.addAll(videoQueue)
                 videoQueue.clear()
             }
@@ -87,21 +86,21 @@ class MainViewModel(
             videoQueue.addAll(dataFromVideoApi)
         } else {
             if (videoQueue.isEmpty()) {
-                temporaryImageList.addAll(imageQueue)
-                imageQueue.clear()
+                temporaryImageList.addAll(imageDataQueue)
+                imageDataQueue.clear()
             }
         }
 
 
-        Log.d("@@ MainViewModel", "sort Test| before / imageQueue size: ${imageQueue.size}, videoQueue size: ${videoQueue.size}")
+        Log.d("@@ MainViewModel", "sort Test| before / imageQueue size: ${imageDataQueue.size}, videoQueue size: ${videoQueue.size}")
 
-        while (imageQueue.isNotEmpty() && videoQueue.isNotEmpty()) {
-            val image = imageQueue.peek()
+        while (imageDataQueue.isNotEmpty() && videoQueue.isNotEmpty()) {
+            val image = imageDataQueue.peek()
             val video = videoQueue.peek()
 
             if (image != null && video != null) {
                 if (image.dateTime > video.dateTime) {
-                    imageQueue.poll()?.let {
+                    imageDataQueue.poll()?.let {
                         temporaryImageList.add(it)
                     }
                 } else {
@@ -115,11 +114,11 @@ class MainViewModel(
         return temporaryImageList
     }
 
-    private fun updateImageListWithMyImages(imageList: ArrayList<KakaoImage>): ArrayList<KakaoImage> {
+    private fun updateImageListWithMyImages(imageDataList: ArrayList<ImageData>): ArrayList<ImageData> {
         val myImageListString = repository.getMyImageListString()
-        val updatedImageList = ArrayList<KakaoImage>(imageList.size)
+        val updatedImageList = ArrayList<ImageData>(imageDataList.size)
 
-        imageList.forEach { image ->
+        imageDataList.forEach { image ->
             if (image.thumbnailUrl != null && myImageListString.contains(image.thumbnailUrl)) {
                 updatedImageList.add(image.copy(isMyImage = true))
             } else {
@@ -137,7 +136,7 @@ class MainViewModel(
 
         totalImageList.clear()
 
-        imageQueue.clear()
+        imageDataQueue.clear()
         videoQueue.clear()
 
         page = 1
@@ -168,7 +167,7 @@ class MainViewModel(
         }
 
         totalImageList.add(position, newImage)
-        _imageList.postValue(totalImageList)
+        _imageDataList.postValue(totalImageList)
     }
 
 
@@ -182,18 +181,18 @@ class MainViewModel(
         Log.d("@@ MainViewModel", "getMyImage | resultArray.size : ${resultArray.size}")
 
         if (resultArray.size > 1) {
-            val myImageList = ArrayList<KakaoImage>()
+            val myImageList = ArrayList<ImageData>()
 
             resultArray.forEach {
                 if (it.isEmpty()) return@forEach
 
-                val kakaoImage = KakaoImage(thumbnailUrl = it, isMyImage = true)
-                myImageList.add(kakaoImage)
+                val imageData = ImageData(thumbnailUrl = it, isMyImage = true)
+                myImageList.add(imageData)
             }
-            _myImageList.postValue(myImageList)
+            _myImageDataList.postValue(myImageList)
             _isMyImageListEmpty.postValue(false)
         } else {
-            _myImageList.postValue(emptyList())
+            _myImageDataList.postValue(emptyList())
             _isMyImageListEmpty.postValue(true)
         }
     }
@@ -201,7 +200,7 @@ class MainViewModel(
     fun onClickLikeOnMyImage(position: Int) {
         Log.d("@@ MainViewModel", "onClickLikeMyImage | position : $position")
 
-        val myList: ArrayList<KakaoImage> = (_myImageList.value?: return) as ArrayList<KakaoImage>
+        val myList: ArrayList<ImageData> = (_myImageDataList.value?: return) as ArrayList<ImageData>
 
         Log.d("@@ MainViewModel", "onClickLikeMyImage | myList.size : ${myList.size}")
 
@@ -210,8 +209,8 @@ class MainViewModel(
         myList[position].thumbnailUrl?.let {
             Log.d("@@ MainViewModel", "onClickLikeMyImage | myList[position].thumbnailUrl : $it")
 
-            totalImageList.indexOfFirst { kakaoImage ->
-                kakaoImage.thumbnailUrl == it
+            totalImageList.indexOfFirst { imageData ->
+                imageData.thumbnailUrl == it
             }.let { position ->
                 if (position != NO_POSITION) {
                     onClickLikeOnSearch(position)
@@ -239,14 +238,14 @@ class MainViewModel(
         isLoading: Boolean,
         query: String,
         page: Int,
-        imageQueueData: List<KakaoImage>,
-        videoQueueData: List<KakaoImage>
+        imageDataQueueData: List<ImageData>,
+        videoQueueData: List<ImageData>
     ) {
         this.isLoading = isLoading
         this.query = query
         this.page = page
 
-        imageQueue.addAll(imageQueueData)
+        imageDataQueue.addAll(imageDataQueueData)
         videoQueue.addAll(videoQueueData)
     }
 

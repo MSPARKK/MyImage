@@ -4,7 +4,7 @@ import com.google.gson.annotations.SerializedName
 import com.mspark.myimage.util.BuildVersionProviderImpl
 import com.mspark.myimage.util.TimeStampUtil
 
-data class KakaoImage(
+data class ImageData(
     @SerializedName("thumbnail_url", alternate = ["thumbnail"])
     val thumbnailUrl: String? = null,
 

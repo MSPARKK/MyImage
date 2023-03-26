@@ -5,10 +5,10 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.mspark.myimage.data.KakaoImage
+import com.mspark.myimage.data.ImageData
 import com.mspark.myimage.databinding.ItemImageBinding
 
-class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPARATOR) {
+class ImageAdapter: ListAdapter<ImageData, ImageAdapter.ImageViewHolder>(COMPARATOR) {
     var onClickLike: ((Int) -> Unit)? = null
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
@@ -21,17 +21,17 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
         holder.bind(getItem(position))
     }
 
-    override fun submitList(list: List<KakaoImage>?) {
+    override fun submitList(list: List<ImageData>?) {
         super.submitList(list?.let { ArrayList(it) })
     }
 
     companion object {
-        val COMPARATOR = object : DiffUtil.ItemCallback<KakaoImage>() {
-            override fun areContentsTheSame(oldItem: KakaoImage, newItem: KakaoImage): Boolean =
+        val COMPARATOR = object : DiffUtil.ItemCallback<ImageData>() {
+            override fun areContentsTheSame(oldItem: ImageData, newItem: ImageData): Boolean =
                 oldItem.isMyImage == newItem.isMyImage
                         && oldItem.dateTime == newItem.dateTime
 
-            override fun areItemsTheSame(oldItem: KakaoImage, newItem: KakaoImage): Boolean =
+            override fun areItemsTheSame(oldItem: ImageData, newItem: ImageData): Boolean =
                 oldItem.thumbnailUrl == newItem.thumbnailUrl
         }
     }
@@ -40,8 +40,8 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
         private val binding: ItemImageBinding,
         private val onClickLike: ((Int) -> Unit)? = null
     ): RecyclerView.ViewHolder(binding.root), CustomClickListener {
-        fun bind(kakaoImage: KakaoImage) {
-            binding.model = kakaoImage
+        fun bind(imageData: ImageData) {
+            binding.model = imageData
             binding.likeClickListener = this
         }
 

@@ -72,7 +72,7 @@ class SearchFragment: Fragment() {
     }
 
     private fun setObserver() {
-        viewModel.imageList.observe(viewLifecycleOwner) {
+        viewModel.imageDataList.observe(viewLifecycleOwner) {
             lifecycleScope.launchWhenCreated {
                 Log.d("@@ SearchFragment", "setObserver, imageList: ${it.size}")
                 imageAdapter.submitList(it)

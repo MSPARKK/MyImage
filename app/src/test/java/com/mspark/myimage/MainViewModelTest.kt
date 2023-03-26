@@ -1,7 +1,7 @@
 package com.mspark.myimage
 
 import androidx.arch.core.executor.testing.InstantTaskExecutorRule
-import com.mspark.myimage.data.KakaoImage
+import com.mspark.myimage.data.ImageData
 import com.mspark.myimage.repository.MainLocalDataSource
 import com.mspark.myimage.repository.MainRemoteDataSource
 import com.mspark.myimage.repository.MainRepository
@@ -60,20 +60,20 @@ class MainViewModelTest {
         runBlocking {
             // Given
             val dataFromImageApi = mutableListOf(
-                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
-                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00"),
+                ImageData("image-A","2023-03-20T21:22:00.000+09:00"),
+                ImageData("image-B","2023-03-20T21:20:00.000+09:00"),
             )
 
             val dataFromVideoApi = mutableListOf(
-                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00"),
-                KakaoImage("video-B","2023-03-20T21:19:00.000+09:00"),
+                ImageData("video-A","2023-03-20T21:21:00.000+09:00"),
+                ImageData("video-B","2023-03-20T21:19:00.000+09:00"),
             )
 
 
             val resultFromImageApi = mutableListOf(
-                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
-                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00", true),
-                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00", true),
+                ImageData("image-A","2023-03-20T21:22:00.000+09:00"),
+                ImageData("video-A","2023-03-20T21:21:00.000+09:00", true),
+                ImageData("image-B","2023-03-20T21:20:00.000+09:00", true),
             )
 
             val query = "test"
@@ -93,7 +93,7 @@ class MainViewModelTest {
             mainViewModel.searchNewQuery(query)
 
             // Then
-            assertEquals(resultFromImageApi, mainViewModel.imageList.getOrAwaitValue())
+            assertEquals(resultFromImageApi, mainViewModel.imageDataList.getOrAwaitValue())
 
         }
     }
@@ -105,22 +105,22 @@ class MainViewModelTest {
         runBlocking {
             // Given
             val dataFromImageApi = mutableListOf(
-                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
-                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00"),
-                KakaoImage("image-C","2023-03-20T21:16:00.000+09:00"),
+                ImageData("image-A","2023-03-20T21:22:00.000+09:00"),
+                ImageData("image-B","2023-03-20T21:20:00.000+09:00"),
+                ImageData("image-C","2023-03-20T21:16:00.000+09:00"),
             )
 
             val dataFromVideoApi = mutableListOf(
-                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00"),
-                KakaoImage("video-B","2023-03-20T21:19:00.000+09:00"),
+                ImageData("video-A","2023-03-20T21:21:00.000+09:00"),
+                ImageData("video-B","2023-03-20T21:19:00.000+09:00"),
             )
 
 
             val resultFromImageApi = mutableListOf(
-                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
-                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00", true),
-                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00", true),
-                KakaoImage("video-B","2023-03-20T21:19:00.000+09:00"),
+                ImageData("image-A","2023-03-20T21:22:00.000+09:00"),
+                ImageData("video-A","2023-03-20T21:21:00.000+09:00", true),
+                ImageData("image-B","2023-03-20T21:20:00.000+09:00", true),
+                ImageData("video-B","2023-03-20T21:19:00.000+09:00"),
             )
 
             val query = "test"
@@ -140,7 +140,7 @@ class MainViewModelTest {
             mainViewModel.searchNewQuery(query)
 
             // Then
-            assertEquals(resultFromImageApi, mainViewModel.imageList.getOrAwaitValue())
+            assertEquals(resultFromImageApi, mainViewModel.imageDataList.getOrAwaitValue())
 
         }
     }
@@ -151,24 +151,24 @@ class MainViewModelTest {
         runBlocking {
             // Given
             val dataFromImageApi = mutableListOf(
-                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
-                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00"),
+                ImageData("image-A","2023-03-20T21:22:00.000+09:00"),
+                ImageData("image-B","2023-03-20T21:20:00.000+09:00"),
             )
 
             val dataFromVideoApi = mutableListOf(
-                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00"),
-                KakaoImage("video-B","2023-03-20T21:19:00.000+09:00"),
+                ImageData("video-A","2023-03-20T21:21:00.000+09:00"),
+                ImageData("video-B","2023-03-20T21:19:00.000+09:00"),
             )
 
             val videoQueueData = mutableListOf(
-                KakaoImage("video-pre-A", "2023-03-20T21:21:30.000+09:00"),
+                ImageData("video-pre-A", "2023-03-20T21:21:30.000+09:00"),
             )
 
             val resultFromImageApi = mutableListOf(
-                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
-                KakaoImage("video-pre-A", "2023-03-20T21:21:30.000+09:00"),
-                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00", true),
-                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00", true),
+                ImageData("image-A","2023-03-20T21:22:00.000+09:00"),
+                ImageData("video-pre-A", "2023-03-20T21:21:30.000+09:00"),
+                ImageData("video-A","2023-03-20T21:21:00.000+09:00", true),
+                ImageData("image-B","2023-03-20T21:20:00.000+09:00", true),
             )
 
             val query = "test"
@@ -189,7 +189,7 @@ class MainViewModelTest {
             mainViewModel.getMoreImage()
 
             // Then
-            assertEquals(resultFromImageApi, mainViewModel.imageList.getOrAwaitValue())
+            assertEquals(resultFromImageApi, mainViewModel.imageDataList.getOrAwaitValue())
 
         }
     }
@@ -199,24 +199,24 @@ class MainViewModelTest {
         runBlocking {
             // Given
             val dataFromImageApi = mutableListOf(
-                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
-                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00"),
+                ImageData("image-A","2023-03-20T21:22:00.000+09:00"),
+                ImageData("image-B","2023-03-20T21:20:00.000+09:00"),
             )
 
             val dataFromVideoApi = mutableListOf(
-                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00"),
-                KakaoImage("video-B","2023-03-20T21:19:00.000+09:00"),
+                ImageData("video-A","2023-03-20T21:21:00.000+09:00"),
+                ImageData("video-B","2023-03-20T21:19:00.000+09:00"),
             )
 
             val videoQueueData = mutableListOf(
-                KakaoImage("video-pre-A", "2023-03-20T21:23:30.000+09:00"),
+                ImageData("video-pre-A", "2023-03-20T21:23:30.000+09:00"),
             )
 
             val resultFromImageApi = mutableListOf(
-                KakaoImage("video-pre-A", "2023-03-20T21:23:30.000+09:00"),
-                KakaoImage("image-A","2023-03-20T21:22:00.000+09:00"),
-                KakaoImage("video-A","2023-03-20T21:21:00.000+09:00", true),
-                KakaoImage("image-B","2023-03-20T21:20:00.000+09:00", true),
+                ImageData("video-pre-A", "2023-03-20T21:23:30.000+09:00"),
+                ImageData("image-A","2023-03-20T21:22:00.000+09:00"),
+                ImageData("video-A","2023-03-20T21:21:00.000+09:00", true),
+                ImageData("image-B","2023-03-20T21:20:00.000+09:00", true),
             )
 
             val query = "test"
@@ -237,7 +237,7 @@ class MainViewModelTest {
             mainViewModel.getMoreImage()
 
             // Then
-            assertEquals(resultFromImageApi, mainViewModel.imageList.getOrAwaitValue())
+            assertEquals(resultFromImageApi, mainViewModel.imageDataList.getOrAwaitValue())
 
         }
     }
@@ -253,7 +253,7 @@ class MainViewModelTest {
         mainViewModel.getMyImage()
 
         // Then
-        assertEquals(mutableListOf<KakaoImage>(), mainViewModel.myImageList.getOrAwaitValue())
+        assertEquals(mutableListOf<ImageData>(), mainViewModel.myImageDataList.getOrAwaitValue())
         assertEquals(true, mainViewModel.isMyImageEmpty.getOrAwaitValue())
     }
 
@@ -263,8 +263,8 @@ class MainViewModelTest {
         val myImageListString = "|image-B|video-A"
 
         val result = mutableListOf(
-            KakaoImage("image-B","", true),
-            KakaoImage("video-A","", true),
+            ImageData("image-B","", true),
+            ImageData("video-A","", true),
         )
 
         `when`(mainRepository.getMyImageListString()).thenReturn(myImageListString)
@@ -273,7 +273,7 @@ class MainViewModelTest {
         mainViewModel.getMyImage()
 
         // Then
-        assertEquals(result, mainViewModel.myImageList.getOrAwaitValue())
+        assertEquals(result, mainViewModel.myImageDataList.getOrAwaitValue())
         assertEquals(false, mainViewModel.isMyImageEmpty.getOrAwaitValue())
     }
 

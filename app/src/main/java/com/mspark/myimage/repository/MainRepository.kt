@@ -5,17 +5,15 @@ import android.content.SharedPreferences
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import com.mspark.myimage.api.KakaoOpenApi
-import com.mspark.myimage.data.ImageSearchResponse
-import com.mspark.myimage.data.KakaoImage
+import com.mspark.myimage.data.ImageData
 import com.mspark.myimage.util.Constants.KakaoApi.IMAGE_SIZE
 import com.mspark.myimage.util.Constants.KakaoApi.SORT_RECENCY
 import com.mspark.myimage.util.Constants.Shared.KEY_MY_IMAGE_LIST
 import com.mspark.myimage.util.Constants.Shared.SAVE_NAME
 import com.mspark.myimage.util.Constants.Shared.SEPARATOR
-import retrofit2.Response
 
 interface MainRepository {
-    suspend fun searchImage(path: String, query : String, page: Int): MutableList<KakaoImage>
+    suspend fun searchImage(path: String, query : String, page: Int): MutableList<ImageData>
 
     fun updateMyImage(imageUrl: String)
     fun getMyImageListString(): String
@@ -25,7 +23,7 @@ class MainRepositoryImpl(
     private val remoteDataSource: MainRemoteDataSource,
     private val localDataSource: MainLocalDataSource
 ): MainRepository {
-    override suspend fun searchImage(path: String, query: String, page: Int): MutableList<KakaoImage> {
+    override suspend fun searchImage(path: String, query: String, page: Int): MutableList<ImageData> {
         return remoteDataSource.searchImage(path, query, page)
     }
 
@@ -54,14 +52,14 @@ class MainRepositoryImpl(
 }
 
 interface MainRemoteDataSource {
-    suspend fun searchImage(path: String, query : String, page: Int): MutableList<KakaoImage>
+    suspend fun searchImage(path: String, query : String, page: Int): MutableList<ImageData>
 }
 
 class MainRemoteDataSourceImpl(
     private val kakaoOpenApi: KakaoOpenApi
 ): MainRemoteDataSource {
 
-    override suspend fun searchImage(path: String, query: String, page: Int): MutableList<KakaoImage> {
+    override suspend fun searchImage(path: String, query: String, page: Int): MutableList<ImageData> {
         kakaoOpenApi.searchImage(
             path = path,
             query = query,

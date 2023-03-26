@@ -56,7 +56,7 @@ class MyImageFragment: Fragment() {
     }
 
     private fun setObserver() {
-        viewModel.myImageList.observe(viewLifecycleOwner) {
+        viewModel.myImageDataList.observe(viewLifecycleOwner) {
             lifecycleScope.launchWhenCreated {
                 Log.d("@@ MyImageFragment", "setObserver, imageList: ${it.size}")
                 imageAdapter.submitList(it)

@@ -7,7 +7,7 @@
     <data>
         <variable
             name="model"
-            type="com.mspark.myimage.data.KakaoImage"/>
+            type="com.mspark.myimage.data.ImageData"/>
 
         <variable
             name="likeClickListener"
