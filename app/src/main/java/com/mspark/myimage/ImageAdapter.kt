@@ -1,9 +1,7 @@
 package com.mspark.myimage
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -15,7 +13,7 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ImageViewHolder {
         val binding = ItemImageBinding.inflate(LayoutInflater.from(parent.context), parent, false)
-        return ImageViewHolder(binding, parent.context) {
+        return ImageViewHolder(binding) {
             onClickLike?.invoke(it)
         }
     }
@@ -40,29 +38,15 @@ class ImageAdapter: ListAdapter<KakaoImage, ImageAdapter.ImageViewHolder>(COMPAR
 
     class ImageViewHolder(
         private val binding: ItemImageBinding,
-        private val context: Context,
         private val onClickLike: ((Int) -> Unit)? = null
     ): RecyclerView.ViewHolder(binding.root), CustomClickListener {
         fun bind(kakaoImage: KakaoImage) {
             binding.model = kakaoImage
             binding.likeClickListener = this
-
-            setItemTimeStamp(kakaoImage)
         }
 
         override fun likeClicked() {
             onClickLike?.invoke(layoutPosition)
-        }
-
-
-        // @@ 잠깐! todo : test 로직 삭제
-        private fun setItemTimeStamp(kakaoImage: KakaoImage) {
-
-            if (kakaoImage.url != null) {
-                binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.purple_500))
-            } else {
-                binding.itemTimeStamp.setTextColor(ContextCompat.getColorStateList(context, R.color.black))
-            }
         }
     }
 }

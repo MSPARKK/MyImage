@@ -11,11 +11,7 @@ data class KakaoImage(
     @SerializedName("datetime")
     val dateTime: String = "",
 
-    var isMyImage: Boolean = false,
-
-    // @@ 잠깐! todo : test 로직 삭제
-    @SerializedName("url")
-    val url: String? = null,
+    var isMyImage: Boolean = false
 ) {
     fun getTimeStamp(): String {
         return TimeStampUtil.getTimeStamp(dateTime, BuildVersionProviderImpl())
