@@ -10,6 +10,8 @@ class Constants {
     }
 
     object KakaoApi {
+        const val BASE_URL = "https://dapi.kakao.com/"
+
         const val PATH_IMAGE = "image"
         const val PATH_VIDEO = "vclip"
 

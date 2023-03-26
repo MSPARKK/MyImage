@@ -1,7 +1,9 @@
 package com.mspark.myimage.api
 
 import android.util.Log
+import com.mspark.myimage.BuildConfig
 import com.mspark.myimage.data.ImageSearchResponse
+import com.mspark.myimage.util.Constants.KakaoApi.BASE_URL
 import okhttp3.CertificatePinner
 import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
@@ -17,7 +19,7 @@ interface KakaoOpenApi {
     @GET("v2/search/{path}")
     suspend fun searchImage(
         @Path("path") path: String,
-        @Header("Authorization") apiKey: String = AUTH_HEADER,
+        @Header("Authorization") apiKey: String = BuildConfig.REST_API_KEY,
         @Query("query") query : String,
         @Query("sort") sort : String,
         @Query("page") page: Int,
@@ -25,9 +27,6 @@ interface KakaoOpenApi {
     ): Response<ImageSearchResponse>
 
     companion object {
-        const val BASE_URL = "https://dapi.kakao.com/"
-        const val AUTH_HEADER = "KakaoAK 7c2f21969879468dc06033d4812f3fe7" // 잠깐! todo : 키 숨기기
-
         fun create(): KakaoOpenApi {
             val httpBuilder = OkHttpClient.Builder()
 
