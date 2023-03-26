@@ -35,9 +35,16 @@ class MainViewModel(
 
     private val _myImageDataList: SingleLiveEvent<List<ImageData>> = SingleLiveEvent()
     val myImageDataList: LiveData<List<ImageData>> = _myImageDataList
+
     private val _isMyImageListEmpty: SingleLiveEvent<Boolean> = SingleLiveEvent()
     val isMyImageEmpty: LiveData<Boolean> = _isMyImageListEmpty
 
+    private val _isSearchEmpty: SingleLiveEvent<Boolean> = SingleLiveEvent()
+    val isSearchEmpty: LiveData<Boolean> = _isSearchEmpty
+
+    init {
+        _isSearchEmpty.postValue(totalImageList.isEmpty())
+    }
 
     private fun searchImage() {
 
@@ -66,6 +73,7 @@ class MainViewModel(
 
         totalImageList.addAll(resultList)
         _imageDataList.postValue(totalImageList)
+        _isSearchEmpty.postValue(totalImageList.isEmpty())
 
         isLoading = false
     }
@@ -90,7 +98,6 @@ class MainViewModel(
                 imageDataQueue.clear()
             }
         }
-
 
         Log.d("@@ MainViewModel", "sort Test| before / imageQueue size: ${imageDataQueue.size}, videoQueue size: ${videoQueue.size}")
 

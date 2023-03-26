@@ -64,6 +64,20 @@
             app:layout_constraintTop_toBottomOf="@id/searchBottomView"
             app:layout_constraintBottom_toBottomOf="parent"/>
 
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:gravity="center"
+            android:clickable="true"
+            android:focusable="true"
+            android:textSize="20sp"
+            android:textStyle="bold"
+            toVisibility="@{view.isSearchEmpty()}"
+            android:textColor="@color/black"
+            android:text="@string/empty_search_result"
+            app:layout_constraintTop_toBottomOf="@id/searchBottomView"
+            app:layout_constraintBottom_toBottomOf="parent"/>
+
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 </layout>
